@@ -12,7 +12,7 @@ export default function BannerCarousel() {
     const bannerSlides: BannerSlide[] = [
       {
         id: 1,
-        imageUrl: '/banners/pet-food-promo.png', 
+        imageUrl: 'https://res.cloudinary.com/dyoboy5oj/image/upload/v1742227208/da-net8/fw5ncajn7lgtbnwoweca.png', 
         title: 'Khuyến mãi thức ăn cho thú cưng',
         description: 'Giảm đến 30% cho tất cả các sản phẩm thức ăn cao cấp',
         ctaText: 'Mua ngay',
@@ -21,7 +21,7 @@ export default function BannerCarousel() {
       },
       {
         id: 2,
-        imageUrl: '/banners/pet-grooming.png',
+        imageUrl: 'https://res.cloudinary.com/dyoboy5oj/image/upload/v1742227208/da-net8/fw5ncajn7lgtbnwoweca.png',
         title: 'Dịch vụ spa & làm đẹp',
         description: 'Đặt lịch ngay hôm nay để nhận ưu đãi 20%',
         ctaText: 'Đặt lịch',
@@ -30,7 +30,7 @@ export default function BannerCarousel() {
       },
       {
         id: 3,
-        imageUrl: '/banners/pet-toys.png',
+        imageUrl: 'https://res.cloudinary.com/dyoboy5oj/image/upload/v1742227208/da-net8/fw5ncajn7lgtbnwoweca.png',
         title: 'Đồ chơi thú cưng mới nhất',
         description: 'Mua 2 tặng 1 cho tất cả đồ chơi mới nhập',
         ctaText: 'Khám phá',
@@ -87,7 +87,7 @@ export default function BannerCarousel() {
                       className="max-h-full object-contain"
                     />
                   </div>
-                  <div className="w-1/2 p-8 flex flex-col justify-center">
+                  <div className="w-1/2 p-8 flex flex-col justify-center items-center">
                     <h2 className="text-2xl md:text-3xl font-bold mb-4">{slide.title}</h2>
                     <p className="text-gray-700 mb-6">{slide.description}</p>
                     <Button asChild className="w-max">

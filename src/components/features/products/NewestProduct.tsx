@@ -45,7 +45,7 @@ const NewestProducts: React.FC = () => {
     }
 
     return (
-        <div className="">
+        <>
                 {products.map((product) => (
                     <ProductCard
                         key={product.id}
@@ -64,7 +64,7 @@ const NewestProducts: React.FC = () => {
                         isBestseller={false}
                     />
                 ))}
-        </div>
+        </>
     );
 };
 

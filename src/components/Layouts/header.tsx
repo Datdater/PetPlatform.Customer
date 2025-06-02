@@ -1,28 +1,37 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { Bell, ShoppingCart, User, Menu, X, MapPin, Search } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { 
-  DropdownMenu, 
-  DropdownMenuContent, 
-  DropdownMenuItem, 
-  DropdownMenuLabel, 
-  DropdownMenuSeparator, 
-  DropdownMenuTrigger 
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import logo from '@/assets/logo.png';
+import { AuthButton } from '../features/auth';
+import { useSelector } from 'react-redux';
+import type { RootState } from '@/store/store';
+import { UserContext } from '@/store/contexts/UserContext';
+import { logout } from '@/services/auth.service';
 
 export default function Header() {
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const user = useContext(UserContext);
     const [notificationCount, setNotificationCount] = useState(3);
-    const [cartItemCount, setCartItemCount] = useState(2);
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
-    const [location, setLocation] = useState("Q. 1, P. Bến Nghé, Hồ Chí Minh");
 
+    const { itemCount, isLoading } = useSelector((state: RootState) => state.cart);
+
+    const handleLogout = () => {
+        logout();
+        window.location.reload();
+    };
 
     const perks = [
         { icon: "🔒", text: "100% hàng thật" },
@@ -32,7 +41,7 @@ export default function Header() {
         { icon: "⚡", text: "Giao nhanh 2h" },
         { icon: "🏷️", text: "Giá siêu rẻ" }
     ];
-    
+
     const handleSearch = (e: React.FormEvent) => {
         e.preventDefault();
         console.log("Searching for:", searchQuery);
@@ -42,7 +51,7 @@ export default function Header() {
         <header className="bg-white border-b">
             {/* Top banner */}
             <div className="bg-green-50 text-center py-1 text-sm">
-                <span>Freeship đơn từ 45k, giảm nhiều hơn cùng <span className="font-bold text-blue-600">FREESHIP XTRA</span></span>
+                <span>Sen chọn gì- Pet thích đó</span>
             </div>
 
             <div className="max-w-7xl mx-auto px-4 py-2">
@@ -74,12 +83,12 @@ export default function Header() {
 
                     {/* User area */}
                     <div className="flex items-center gap-6 flex-shrink-0">
-                    <DropdownMenu>
+                        <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                                 <Button variant="ghost" size="icon" className="relative">
                                     <Bell className="h-6 w-6" />
                                     {notificationCount > 0 && (
-                                        <Badge 
+                                        <Badge
                                             className="absolute -top-1 -right-1 px-1.5 py-0.5 text-xs"
                                             variant="destructive"
                                         >
@@ -96,65 +105,58 @@ export default function Header() {
                                 <DropdownMenuItem>Chào mừng đến PetPlatform!</DropdownMenuItem>
                             </DropdownMenuContent>
                         </DropdownMenu>
-                        
+
                         {/* Shopping Cart */}
                         <Link to="/cart">
-                            <Button variant="ghost" size="icon" className="relative">
+                            <Button variant="ghost" size="icon" className="relative" data-cart-icon>
                                 <ShoppingCart className="h-6 w-6" />
-                                {cartItemCount > 0 && (
-                                    <Badge 
+                                {!isLoading && itemCount > 0 && (
+                                    <Badge
                                         className="absolute -top-1 -right-1 px-1.5 py-0.5 text-xs"
                                         variant="destructive"
                                     >
-                                        {cartItemCount}
+                                        {itemCount}
                                     </Badge>
                                 )}
                             </Button>
                         </Link>
                         {/* Account */}
                         <div className="flex items-center">
-                            {isLoggedIn ? (
+                            {user ? (
                                 <DropdownMenu>
                                     <DropdownMenuTrigger asChild>
                                         <Button variant="ghost" className="flex items-center gap-2 p-0 h-auto hover:bg-transparent">
                                             <Avatar className="h-8 w-8">
-                                                <AvatarImage src="/placeholder-avatar.jpg" />
+                                                <AvatarImage src={user.profilePictureUrl || "/placeholder-avatar.jpg"} />
                                                 <AvatarFallback>
                                                     <User className="h-5 w-5" />
                                                 </AvatarFallback>
                                             </Avatar>
                                             <div className="flex flex-col items-start text-sm">
                                                 <span className="text-muted-foreground">Tài khoản</span>
-                                                <span className="font-medium">My Account</span>
+                                                <span className="font-medium">{`${user.firstName} ${user.lastName}`}</span>
                                             </div>
                                         </Button>
                                     </DropdownMenuTrigger>
                                     <DropdownMenuContent align="end">
-                                        <DropdownMenuItem>Thông tin tài khoản</DropdownMenuItem>
-                                        <DropdownMenuItem>Đơn hàng của tôi</DropdownMenuItem>
+                                        <DropdownMenuItem asChild>
+                                            <Link to="/user/profile">Thông tin tài khoản</Link>
+                                        </DropdownMenuItem>
+                                        <DropdownMenuItem asChild>
+                                            <Link to="/user/orders">Đơn hàng của tôi</Link>
+                                        </DropdownMenuItem>
                                         <DropdownMenuSeparator />
-                                        <DropdownMenuItem onClick={() => setIsLoggedIn(false)}>
+                                        <DropdownMenuItem onClick={handleLogout}>
                                             Đăng xuất
                                         </DropdownMenuItem>
                                     </DropdownMenuContent>
                                 </DropdownMenu>
                             ) : (
-                                <Button variant="ghost" className="flex items-center gap-2 p-0 h-auto hover:bg-transparent" onClick={() => setIsLoggedIn(true)}>
-                                    <User className="h-7 w-7" />
-                                    <div className="flex flex-col items-start text-sm">
-                                        <span className="text-muted-foreground">Tài khoản</span>
-                                        <span className="font-medium">Đăng nhập / Đăng ký</span>
-                                    </div>
-                                </Button>
+                                <AuthButton />
                             )}
                         </div>
-                        
-                        {/* Notifications */}
-                        
                     </div>
                 </div>
-
-                
 
                 {/* Perks bar */}
                 <div className="flex justify-center items-center gap-4 py-2 overflow-x-auto text-sm border-t">

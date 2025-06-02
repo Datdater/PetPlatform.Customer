@@ -1,9 +1,7 @@
 import BannerCarousel from "@/components/common/bannerCarousel";
 import Sidebar from "@/components/common/sideBar";
-import ProductCard from "@/components/features/products/productCard";
-import Footer from "@/components/Layouts/footer";
-import Header from "@/components/Layouts/header";
 import NewestProducts from "@/components/features/products/NewestProduct";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 
 const products = [
     {

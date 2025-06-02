@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { IProductVariant } from '@/types/IProduct';
 export interface ProductCardDetailProps {
   name: string;
@@ -16,6 +16,7 @@ export interface ProductCardDetailProps {
   shippingInfo?: string;
   likedCount?: number;
   description?: string;
+  handleAddToCart?: () => void;
 }
 
 const ProductCardDetail: React.FC<ProductCardDetailProps> = ({
@@ -32,12 +33,12 @@ const ProductCardDetail: React.FC<ProductCardDetailProps> = ({
   shopLocation,
   variants = [],
   description,
+  handleAddToCart,
 }) => {
   const [selectedImage, setSelectedImage] = useState(images[0]);
   // Attribute selection state
   const attributeKeys = useMemo(() => {
     if (!variants.length) return [];
-    // Only use up to 2 attributes (e.g., size, flavor)
     return Object.keys(variants[0].attributes).slice(0, 2);
   }, [variants]);
   const [selectedAttributes, setSelectedAttributes] = useState<{ [key: string]: string }>({});
@@ -74,6 +75,11 @@ const ProductCardDetail: React.FC<ProductCardDetailProps> = ({
   const handleSelectAttribute = (key: string, value: string) => {
     setSelectedAttributes(prev => ({ ...prev, [key]: value }));
   };
+
+  useEffect(() => {
+    handleSelectAttribute(attributeKeys[0], attributeOptions[attributeKeys[0]][0]);
+    handleSelectAttribute(attributeKeys[1], attributeOptions[attributeKeys[1]][0]);
+  }, []);
 
   return (
     <>
@@ -165,7 +171,7 @@ const ProductCardDetail: React.FC<ProductCardDetailProps> = ({
         </div>
         {/* Action Buttons */}
         <div className="flex gap-2 mt-2">
-          <button className="flex-1 bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded font-semibold shadow">Thêm vào giỏ hàng</button>
+          <button className="flex-1 bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded font-semibold shadow" onClick={handleAddToCart}>Thêm vào giỏ hàng</button>
           <button className="flex-1 bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded font-semibold shadow">Mua ngay</button>
         </div>
         

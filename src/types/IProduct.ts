@@ -95,3 +95,11 @@ export interface IProductReview {
     comment: string;
     createdAt: string;
 }
+
+export interface IGetProductVariant {
+    productId: string;
+    attribute: {
+        [key: string]: string | number;
+    };
+}
+

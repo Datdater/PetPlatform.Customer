@@ -1,7 +1,6 @@
-import { AxiosResponse } from 'axios';
 import { IResponse } from '@/types/IResponse';
 import { client } from './client';
-import { IAddProduct, IProduct, IProductDetail, IProductReview, IUpdateProduct } from '@/types/IProduct';
+import { IAddProduct, IGetProductVariant, IProduct, IProductDetail, IProductReview, IProductVariant, IUpdateProduct } from '@/types/IProduct';
 
 const BASE_URL = '/products';
 
@@ -21,7 +20,7 @@ export const getProducts = async (
     sortDescending?: boolean;
   }
 ): Promise<IResponse<IProduct>> => {
-  const response: AxiosResponse<IResponse<IProduct>> = await client.get(BASE_URL, {
+  const response: any = await client.get(BASE_URL, {
     params: {
       pageIndex: pageNumber,
       pageSize,
@@ -33,19 +32,19 @@ export const getProducts = async (
 
 // Get product by ID
 export const getProductById = async (id: string): Promise<IProductDetail> => {
-  const response: AxiosResponse<IProductDetail> = await client.get(`${BASE_URL}/${id}`);
+  const response: any = await client.get(`${BASE_URL}/${id}`);
   return response.data;
 };
 
 // Get product reviews
 export const getProductReviews = async (id: string): Promise<IProductReview[]> => {
-  const response: AxiosResponse<IProductReview[]> = await client.get(`${BASE_URL}/${id}/reviews`);
+  const response: any = await client.get(`${BASE_URL}/${id}/reviews`);
   return response.data;
 };
 
 // Create new product
 export const createProduct = async (product: IAddProduct): Promise<string> => {
-  const response: AxiosResponse<string> = await client.post(BASE_URL, product);
+  const response: any = await client.post(BASE_URL, product);
   return response.data;
 };
 
@@ -61,13 +60,13 @@ export const deleteProduct = async (id: string): Promise<void> => {
 
 // Get products by store
 export const getProductsByStore = async (storeId: string): Promise<IProduct[]> => {
-  const response: AxiosResponse<IProduct[]> = await client.get(`${BASE_URL}/store/${storeId}`);
+  const response: any = await client.get(`${BASE_URL}/store/${storeId}`);
   return response.data;
 };
 
 // Search products
 export const searchProducts = async (query: string): Promise<IProduct[]> => {
-  const response: AxiosResponse<IProduct[]> = await client.get(`${BASE_URL}/search`, {
+  const response: any = await client.get(`${BASE_URL}/search`, {
     params: { q: query }
   });
   return response.data;
@@ -75,25 +74,25 @@ export const searchProducts = async (query: string): Promise<IProduct[]> => {
 
 // Get featured products
 export const getFeaturedProducts = async (): Promise<IProduct[]> => {
-  const response: AxiosResponse<IProduct[]> = await client.get(`${BASE_URL}/featured`);
+  const response: any = await client.get(`${BASE_URL}/featured`);
   return response.data;
 };
 
 // Get best-selling products
 export const getBestSellingProducts = async (): Promise<IProduct[]> => {
-  const response: AxiosResponse<IProduct[]> = await client.get(`${BASE_URL}/best-selling`);
+  const response: any = await client.get(`${BASE_URL}/best-selling`);
   return response.data;
 };
 
 // Get new arrivals
 export const getNewArrivals = async (): Promise<IProduct[]> => {
-  const response: AxiosResponse<IProduct[]> = await client.get(`${BASE_URL}/new-arrivals`);
+  const response: any = await client.get(`${BASE_URL}/new-arrivals`);
   return response.data;
 };
 
 // Get products on sale
 export const getProductsOnSale = async (): Promise<IProduct[]> => {
-  const response: AxiosResponse<IProduct[]> = await client.get(`${BASE_URL}/on-sale`);
+  const response: any = await client.get(`${BASE_URL}/on-sale`);
   return response.data;
 };
 
@@ -103,11 +102,13 @@ export const getProductStats = async (productId: string): Promise<{
   totalSales: number;
   averageRating: number;
 }> => {
-  const response: AxiosResponse<{
-    totalViews: number;
-    totalSales: number;
-    averageRating: number;
-  }> = await client.get(`${BASE_URL}/${productId}/stats`);
+  const response: any = await client.get(`${BASE_URL}/${productId}/stats`);
+  return response.data;
+};
+
+// Get product variants
+export const getProductVariants = async (productId: string, attributes: IGetProductVariant): Promise<IProductVariant> => {
+  const response: any = await client.post(`${BASE_URL}/${productId}/product-variants`, attributes);
   return response.data;
 };
 
