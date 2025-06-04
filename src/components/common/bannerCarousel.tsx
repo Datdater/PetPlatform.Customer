@@ -12,7 +12,7 @@ export default function BannerCarousel() {
     const bannerSlides: BannerSlide[] = [
       {
         id: 1,
-        imageUrl: 'https://res.cloudinary.com/dyoboy5oj/image/upload/v1742227208/da-net8/fw5ncajn7lgtbnwoweca.png', 
+        imageUrl: 'https://img.freepik.com/free-vector/gradient-national-pet-day-horizontal-sale-banner-template_23-2151341114.jpg?t=st=1748919021~exp=1748922621~hmac=f9ef337f7963941ebfcb0ac2098840ca2450aabc86163853189e99833f406210&w=1380', 
         title: 'Khuyến mãi thức ăn cho thú cưng',
         description: 'Giảm đến 30% cho tất cả các sản phẩm thức ăn cao cấp',
         ctaText: 'Mua ngay',
@@ -21,7 +21,7 @@ export default function BannerCarousel() {
       },
       {
         id: 2,
-        imageUrl: 'https://res.cloudinary.com/dyoboy5oj/image/upload/v1742227208/da-net8/fw5ncajn7lgtbnwoweca.png',
+        imageUrl: 'https://img.freepik.com/free-vector/veterinary-clinic-social-media-promo-template_23-2149713982.jpg?t=st=1748919116~exp=1748922716~hmac=d7cba50b6f238477e10d6123316178c95da1a31e6755ea07659f89cf6c2680eb&w=1380',
         title: 'Dịch vụ spa & làm đẹp',
         description: 'Đặt lịch ngay hôm nay để nhận ưu đãi 20%',
         ctaText: 'Đặt lịch',
@@ -30,7 +30,7 @@ export default function BannerCarousel() {
       },
       {
         id: 3,
-        imageUrl: 'https://res.cloudinary.com/dyoboy5oj/image/upload/v1742227208/da-net8/fw5ncajn7lgtbnwoweca.png',
+        imageUrl: 'https://img.freepik.com/free-vector/pet-sitting-service-hand-drawn-social-media-cover-template_23-2149650423.jpg?t=st=1748919170~exp=1748922770~hmac=152c5d3c4664322691d338efd9f1fff48c07ff157323e58c5fd498b1ff15a002&w=1380',
         title: 'Đồ chơi thú cưng mới nhất',
         description: 'Mua 2 tặng 1 cho tất cả đồ chơi mới nhập',
         ctaText: 'Khám phá',

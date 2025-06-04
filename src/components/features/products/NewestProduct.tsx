@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { getNewArrivals, getProducts } from '../../../services/product.service';
+import { getProducts } from '../../../services/product.service';
 import { IProduct } from '../../../types/IProduct';
 import { handleProductError } from '../../../services/product.service';
 import ProductCard from '@/components/features/products/productCard';
@@ -9,7 +8,6 @@ const NewestProducts: React.FC = () => {
     const [products, setProducts] = useState<IProduct[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchNewestProducts = async () => {

@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import UserSidebar from '@/components/layouts/navigation'; // Adjust path as needed
-import { getUser, updateUser, updatePassword } from '../../services/user.service';
+import { getUser, updateUser } from '../../services/user.service';
 import { ICustomerProfile } from '../../types/Customers/ICustomer';
 
 const initialProfile: ICustomerProfile = {
@@ -26,11 +25,7 @@ const ProfileCustomer: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
-  const [password, setPassword] = useState({
-    currentPassword: '',
-    newPassword: '',
-    confirmPassword: '',
-  });
+
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -85,30 +80,7 @@ const ProfileCustomer: React.FC = () => {
     }
   };
 
-  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setPassword(prev => ({ ...prev, [name]: value }));
-  };
 
-  const handlePasswordSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError(null);
-    setSuccess(null);
-    if (password.newPassword !== password.confirmPassword) {
-      setError('Mật khẩu mới không khớp');
-      return;
-    }
-    try {
-      await updatePassword({
-        currentPassword: password.currentPassword,
-        newPassword: password.newPassword,
-      });
-      setSuccess('Đổi mật khẩu thành công');
-      setPassword({ currentPassword: '', newPassword: '', confirmPassword: '' });
-    } catch (err: any) {
-      setError(err.message || 'Lỗi khi đổi mật khẩu');
-    }
-  };
 
   // For sidebar user info
   

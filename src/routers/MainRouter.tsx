@@ -9,7 +9,8 @@ import UserLayout from "@/components/layouts/UserLayout";
 import CartPage from "@/pages/cart/Cart";
 import Checkout from "@/pages/checkout/Checkout";
 import OrderCustomerPage from "@/pages/profile/order-customer";
-
+import Search from "@/pages/search/Search";
+import StorePage from "@/pages/store/StorePage";
 const MainRouter = () => {
     return (
         <BrowserRouter>
@@ -44,6 +45,12 @@ const MainRouter = () => {
                             <UserLayout>
                                 <OrderCustomerPage />
                             </UserLayout>
+                        } />
+                        <Route path="/search" element={
+                            <Search />
+                        } />
+                        <Route path="/store/:id" element={
+                            <StorePage />
                         } />
                     </Routes>
                 </Layout>

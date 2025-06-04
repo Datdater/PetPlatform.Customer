@@ -1,11 +1,9 @@
-import React, { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { UserContext } from "@/store/contexts/UserContext";
 import { orderService } from "@/services/order.service";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 import { toast } from "sonner";
 import { formatVnPrice } from "@/utils/formatPrice";
-import { PaginationResponse } from "@/types/common/Pagination";
 
 const PAGE_SIZE = 5;
 
@@ -35,6 +33,7 @@ interface Order {
   price: number;
   orderDetailDTOs: OrderDetail[];
   orderStatus: string;
+  createdAt: string;
 }
 
 export default function OrderCustomerPage() {
@@ -55,6 +54,7 @@ export default function OrderCustomerPage() {
 
   useEffect(() => {
     if (user) fetchOrders();
+    // eslint-disable-next-line
   }, [user, page, tab]);
 
   const fetchOrders = async () => {
@@ -70,7 +70,12 @@ export default function OrderCustomerPage() {
         params.status = tab;
       }
       const res = await orderService.getOrders(params);
-      setOrders(res.items);
+      setOrders(
+        res.items.map((order: any) => ({
+          ...order,
+          createdAt: order.createDate || order.createdAt || "",
+        }))
+      );
       setPagination({
         hasNext: res.next,
         hasPrevious: res.previous,
@@ -103,19 +108,47 @@ export default function OrderCustomerPage() {
     return order.orderDetailDTOs.reduce((total, detail) => total + (detail.price * detail.quantity), 0);
   };
 
+  function getStatusColor(status: string) {
+    switch (status) {
+      case "Delivered": return "bg-green-100 text-green-700";
+      case "Cancelled": return "bg-red-100 text-red-700";
+      case "PendingPayment": return "bg-yellow-100 text-yellow-700";
+      case "Confirmed": return "bg-blue-100 text-blue-700";
+      case "Shipping": return "bg-purple-100 text-purple-700";
+      case "Refunded": return "bg-gray-200 text-gray-700";
+      default: return "bg-gray-100 text-gray-700";
+    }
+  }
+
+  function getStatusLabel(status: string) {
+    switch (status) {
+      case "Delivered": return "Đã giao hàng";
+      case "Cancelled": return "Đã hủy";
+      case "PendingPayment": return "Chờ thanh toán";
+      case "Confirmed": return "Đã xác nhận";
+      case "Shipping": return "Đang vận chuyển";
+      case "Refunded": return "Đã hoàn tiền";
+      default: return status;
+    }
+  }
+
+  function shortOrderId(orderId: string) {
+    return orderId.slice(-6).toUpperCase();
+  }
+
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="text-2xl font-bold mb-6 text-foreground">Đơn mua của tôi</h1>
+    <div className="max-w-4xl mx-auto py-8 px-2">
+      <h1 className="text-3xl font-bold mb-8 text-center">Đơn hàng của tôi</h1>
       {/* Custom Tabs */}
-      <div className="mb-4 flex flex-wrap gap-2">
+      <div className="mb-6 flex flex-wrap gap-2 justify-center">
         {STATUS_TABS.map((t) => (
           <button
             key={t.key}
-            className={`px-4 py-2 rounded border-b-2 font-medium transition-colors ${
-              tab === t.key
-                ? "border-primary text-primary bg-primary/10"
-                : "border-transparent text-muted-foreground hover:bg-accent"
-            }`}
+            className={`px-4 py-2 rounded-full border font-medium transition-colors shadow-sm
+              ${tab === t.key
+                ? "border-orange-500 text-orange-600 bg-orange-50"
+                : "border-gray-200 text-gray-500 hover:bg-gray-100"}
+            `}
             onClick={() => handleTabChange(t.key)}
           >
             {t.label}
@@ -124,79 +157,67 @@ export default function OrderCustomerPage() {
       </div>
       {/* Tab Content */}
       {loading ? (
-        <div className="text-center py-8 text-muted-foreground">Đang tải...</div>
+        <div className="text-center py-16 text-muted-foreground text-lg font-medium animate-pulse">Đang tải...</div>
       ) : orders.length === 0 ? (
-        <div className="text-center py-8 text-muted-foreground">Không có đơn hàng</div>
+        <div className="text-center text-gray-400 py-16">
+          <img src="/empty-orders.svg" alt="No orders" className="mx-auto mb-4 w-32" />
+          <div className="text-lg">Bạn chưa có đơn hàng nào.</div>
+        </div>
       ) : (
-        <div className="space-y-6">
+        <div className="space-y-8">
           {orders.map((order) => (
-            <Card key={order.id} className="p-4">
-              <div className="flex justify-between items-center mb-2">
-                <div className="font-semibold text-primary">
-                  Mã đơn hàng: {order.id}
+            <div key={order.id} className="bg-white rounded-2xl shadow-xl p-6 border border-orange-100 hover:shadow-2xl transition-shadow">
+              <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4 gap-2">
+                <div>
+                  <div className="text-lg font-semibold text-orange-700">
+                    Mã đơn: {shortOrderId(order.id)}
+                  </div>
+                  <div className="text-gray-500 text-sm">Ngày đặt: {order.createdAt}</div>
                 </div>
-                <div className="text-sm font-medium text-muted-foreground">
-                  {STATUS_TABS.find((t) => t.key === order.orderStatus)?.label || order.orderStatus}
-                </div>
+                <span className={`inline-block px-4 py-1 rounded-full text-xs font-semibold mt-2 md:mt-0 ${getStatusColor(order.orderStatus)}`}>
+                  {getStatusLabel(order.orderStatus)}
+                </span>
               </div>
-              <div className="space-y-4">
-                {order.orderDetailDTOs.map((detail, index) => (
-                  <div key={detail.productVariationId} className="flex gap-4">
-                    <img
-                      src={detail.pictureUrl || "/no-image.png"}
-                      alt=""
-                      className="w-20 h-20 object-cover rounded border border-border"
-                    />
-                    <div className="flex-1">
-                      <div className="font-medium text-foreground">
-                        {detail.productName}
-                      </div>
-                      <div className="text-muted-foreground text-sm">
-                        {parseAttributes(detail.attribute)}
-                      </div>
-                      <div className="text-muted-foreground text-sm">
-                        x{detail.quantity}
-                      </div>
+              <div className="divide-y">
+                {order.orderDetailDTOs.map((item, idx) => (
+                  <div key={item.productVariationId + idx} className="flex items-center py-4 gap-4">
+                    <img src={item.pictureUrl} alt={item.productName} className="w-20 h-20 rounded-lg object-cover border bg-gray-50" />
+                    <div className="flex-1 min-w-0">
+                      <div className="font-medium truncate text-base">{item.productName}</div>
+                      <div className="text-gray-500 text-sm truncate">{parseAttributes(item.attribute)}</div>
                     </div>
                     <div className="text-right min-w-[120px]">
-                      <div className="text-muted-foreground text-sm">Đơn giá:</div>
-                      <div className="text-lg font-bold text-primary">
-                        {formatVnPrice(detail.price)}
-                      </div>
+                      <div className="font-semibold text-orange-600">{formatVnPrice(item.price)}</div>
+                      <div className="text-gray-500 text-xs">x {item.quantity}</div>
                     </div>
                   </div>
                 ))}
-                <div className="text-right">
-                  <div className="text-muted-foreground text-sm">Tổng tiền:</div>
-                  <div className="text-lg font-bold text-primary">
-                    {formatVnPrice(calculateOrderTotal(order))}
-                  </div>
-                </div>
               </div>
-              <div className="flex justify-end gap-2 mt-4">
-                {order.orderStatus === "Delivered" && (
-                  <Button variant="default">Đã Nhận Hàng</Button>
-                )}
-                <Button variant="outline">Liên Hệ Người Bán</Button>
+              <div className="flex justify-end mt-6">
+                <span className="text-xl font-bold text-orange-600">
+                  Tổng: {formatVnPrice(calculateOrderTotal(order))}
+                </span>
               </div>
-            </Card>
+            </div>
           ))}
           {/* Pagination */}
-          <div className="flex justify-center mt-6 gap-2">
+          <div className="flex justify-center mt-8 gap-2">
             <Button
               variant="outline"
               size="sm"
               disabled={!pagination.hasPrevious}
               onClick={() => setPage((p) => Math.max(1, p - 1))}
+              className="rounded-full border-orange-200"
             >
               Trang trước
             </Button>
-            <span className="px-3 py-2 text-sm text-foreground">{page}</span>
+            <span className="px-3 py-2 text-base text-foreground font-semibold">{page}</span>
             <Button
               variant="outline"
               size="sm"
               disabled={!pagination.hasNext}
               onClick={() => setPage((p) => p + 1)}
+              className="rounded-full border-orange-200"
             >
               Trang sau
             </Button>

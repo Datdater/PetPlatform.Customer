@@ -1,6 +1,6 @@
 import ProductReviews from '@/components/features/products/ProductReviews';
 import { getProductById, getProductReviews, getProductVariants } from '@/services/product.service';
-import { IProduct, IProductDetail, IProductReview, IProductVariant } from '@/types/IProduct';
+import { IProductDetail, IProductReview, IProductVariant } from '@/types/IProduct';
 import { useEffect, useState, useContext, useMemo } from 'react';
 import { useParams } from 'react-router';
 import { UserContext } from "@/store/contexts/UserContext";

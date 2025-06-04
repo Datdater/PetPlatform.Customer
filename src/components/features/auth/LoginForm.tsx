@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { login, handleAuthError, ILoginRequest } from '@/services/auth.service';
+import { login, handleAuthError } from '@/services/auth.service';
 import { Eye, EyeOff, Lock, Mail } from 'lucide-react';
 import { useForm } from '@/hooks/useForm';
 import { loginSchema, type LoginForm as LoginFormType } from '@/schemas/auth';

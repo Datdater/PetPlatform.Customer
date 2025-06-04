@@ -138,12 +138,6 @@ export default function CartPage() {
   };
 
   // Mock address data (replace with real data or context if available)
-  const address = {
-    name: "Đạt Nguyễn",
-    phone: "0364341107",
-    type: "Nhà",
-    address: "ngân hàng agribank, Xã Hoài Hương, Huyện Hoài Nhơn, Bình Định"
-  };
 
   // Helper to group items by store
   const groupItemsByStore = (items: CartItem[]) => {

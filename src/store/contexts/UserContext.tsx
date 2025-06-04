@@ -1,4 +1,3 @@
-import UserLayout from "@/components/layouts/UserLayout";
 import { getUser } from "@/services/user.service";
 import { ICustomerProfile } from "@/types/Customers/ICustomer";
 import { createContext, useEffect, useState } from "react";

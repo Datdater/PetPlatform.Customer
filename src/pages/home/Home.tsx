@@ -1,26 +1,7 @@
 import BannerCarousel from "@/components/common/bannerCarousel";
 import Sidebar from "@/components/common/sideBar";
 import NewestProducts from "@/components/features/products/NewestProduct";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 
-const products = [
-    {
-        id: '1',
-        title: 'Royal Canin Medium Adult - Thức ăn cho chó trưởng thành giống vừa',
-        imageUrl: 'https://res.cloudinary.com/dyoboy5oj/image/upload/v1742227208/da-net8/fw5ncajn7lgtbnwoweca.png',
-        price: 285000,
-        originalPrice: 320000,
-        discountPercentage: 10,
-        rating: 4.5,
-        reviewCount: 128,
-        shopName: 'PetLover Official',
-        shopVerified: true,
-        freeShipping: true,
-        isNew: false,
-        isBestseller: true
-    },
-    // More products...
-];
 
 export default function Home() {
     return (

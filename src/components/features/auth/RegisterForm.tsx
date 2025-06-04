@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { register, handleAuthError, IRegisterRequest, login } from '@/services/auth.service';
+import { register, handleAuthError, sendEmailConfirmation } from '@/services/auth.service';
 import { Eye, EyeOff, Lock, Mail, User, Phone } from 'lucide-react';
 import { useForm } from '@/hooks/useForm';
-import { loginSchema, registerSchema, type RegisterForm as RegisterFormType } from '@/schemas/auth';
+import { registerSchema, type RegisterForm as RegisterFormType } from '@/schemas/auth';
 
 interface RegisterFormProps {
   isOpen: boolean;
@@ -18,13 +18,26 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ isOpen, onClose, onLoginCli
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [registrationSuccess, setRegistrationSuccess] = useState(false);
+  const [registeredEmail, setRegisteredEmail] = useState('');
+
+  const sendConfirmationEmail = async (email: string) => {
+    try {
+      setLoading(true);
+      await sendEmailConfirmation(email);
+      setError(null);
+    } catch (error) {
+      setError('Không thể gửi email xác nhận. Vui lòng thử lại sau.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const {
     values: formData,
     errors,
     touched,
-    isSubmitting,
     handleChange,
-    handleBlur,
     handleSubmit: handleSubmit,
   } = useForm<RegisterFormType>({
     initialValues: {
@@ -38,17 +51,18 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ isOpen, onClose, onLoginCli
     validationSchema: registerSchema,
     onSubmit: async (values) => {
       try {
-        await login(values);
-        onClose();
-        window.location.href = '/';
+        setLoading(true);
+        await register(values);
+        await sendConfirmationEmail(values.email);
+        setRegistrationSuccess(true);
+        setRegisteredEmail(values.email);
       } catch (error) {
         setError(handleAuthError(error));
+      } finally {
+        setLoading(false);
       }
     },
   });
-
-
-
 
   const toggleShowPassword = () => {
     setShowPassword(!showPassword);
@@ -58,7 +72,44 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ isOpen, onClose, onLoginCli
     setShowConfirmPassword(!showConfirmPassword);
   };
 
+  const handleResendEmail = () => {
+    sendConfirmationEmail(registeredEmail);
+  };
 
+  if (registrationSuccess) {
+    return (
+      <Dialog open={isOpen} onOpenChange={onClose}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-center text-2xl font-bold">Đăng Ký Thành Công</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="text-center text-gray-600">
+              <p>Vui lòng kiểm tra email của bạn để xác nhận tài khoản.</p>
+              <p className="mt-2">Email đã gửi đến: {registeredEmail}</p>
+            </div>
+            <Button 
+              onClick={handleResendEmail} 
+              className="w-full" 
+              disabled={loading}
+            >
+              {loading ? 'Đang gửi...' : 'Gửi lại email xác nhận'}
+            </Button>
+            <div className="text-center text-sm">
+              <span className="text-gray-500">Đã có tài khoản? </span>
+              <button
+                type="button"
+                onClick={onLoginClick}
+                className="text-primary hover:underline font-medium"
+              >
+                Đăng nhập
+              </button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+    );
+  }
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>

@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import { useNavigate, useLocation } from "react-router-dom";
-import { ShoppingBag, CreditCard, Wallet, Banknote, Truck } from "lucide-react";
+import { ShoppingBag, CreditCard, Banknote, Truck } from "lucide-react";
 import { addressService, type Address } from "@/services/address.service";
 import { cartService, type Cart, type CartItem } from "@/services/cart.service";
 import { orderService } from "@/services/order.service";

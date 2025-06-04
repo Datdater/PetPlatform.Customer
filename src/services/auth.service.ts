@@ -1,4 +1,5 @@
 import { client } from './client';
+import axios from 'axios';
 
 // Auth types
 export interface ILoginRequest {
@@ -118,5 +119,13 @@ export const handleAuthError = (error: any): string => {
     return 'Không nhận được phản hồi từ máy chủ';
   } else {
     return 'Lỗi khi thiết lập yêu cầu';
+  }
+};
+
+export const sendEmailConfirmation = async (email: string): Promise<void> => {
+  try {
+    await axios.get(`/api/auth/email?email=${encodeURIComponent(email)}`);
+  } catch (error) {
+    throw handleAuthError(error);
   }
 }; 

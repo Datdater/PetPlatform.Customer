@@ -2,18 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router';
 import { ChevronRight } from 'lucide-react';
 
-// You'll need to import or create these icons, or use an icon library
-// These are placeholder imports - replace with your actual icons
 import dogIcon from '@/assets/dog.png';
-import catIcon from '@/assets/cat.png';
-// import foodIcon from '@/assets/icons/pet-food.png';
-// import toyIcon from '@/assets/icons/pet-toy.png';
-// import medicalIcon from '@/assets/icons/medical.png';
-// import groomIcon from '@/assets/icons/grooming.png';
-// import accessoryIcon from '@/assets/icons/accessory.png';
-// import cageIcon from '@/assets/icons/cage.png';
-// import fishIcon from '@/assets/icons/fish.png';
-// import birdIcon from '@/assets/icons/bird.png';
 
 type CategoryType = {
   id: string;

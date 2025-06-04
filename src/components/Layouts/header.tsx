@@ -1,6 +1,6 @@
 import { useState, useContext } from 'react';
-import { Link } from 'react-router-dom';
-import { Bell, ShoppingCart, User, Menu, X, MapPin, Search } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { Bell, ShoppingCart, User, Search } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -22,8 +22,8 @@ import { logout } from '@/services/auth.service';
 
 export default function Header() {
     const user = useContext(UserContext);
-    const [notificationCount, setNotificationCount] = useState(3);
-    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    const [notificationCount] = useState(3);
+    const [mobileMenuOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
 
     const { itemCount, isLoading } = useSelector((state: RootState) => state.cart);
@@ -33,25 +33,23 @@ export default function Header() {
         window.location.reload();
     };
 
-    const perks = [
-        { icon: "🔒", text: "100% hàng thật" },
-        { icon: "🚚", text: "Freeship mọi đơn" },
-        { icon: "💰", text: "Hoàn 200% nếu hàng giả" },
-        { icon: "📅", text: "30 ngày đổi trả" },
-        { icon: "⚡", text: "Giao nhanh 2h" },
-        { icon: "🏷️", text: "Giá siêu rẻ" }
-    ];
 
+    const navigate = useNavigate();
     const handleSearch = (e: React.FormEvent) => {
         e.preventDefault();
         console.log("Searching for:", searchQuery);
+        navigate(`/search?searchTerm=${encodeURIComponent(searchQuery)}`);
     };
 
     return (
         <header className="bg-white border-b">
             {/* Top banner */}
-            <div className="bg-green-50 text-center py-1 text-sm">
-                <span>Sen chọn gì- Pet thích đó</span>
+            <div className="bg-green-50 text-center  text-sm">
+                <div className="flex items-center gap-2 px-6 py-2 text-center justify-center bg-gradient-to-r from-green-200 via-green-100 to-green-50 shadow text-green-900 font-semibold text-base">
+                    <span role="img" aria-label="pet" className="text-xl">🐾</span>
+                    <span>Sen chọn gì - Pet thích đó</span>
+                    <span role="img" aria-label="pet" className="text-xl">🐶</span>
+                </div>
             </div>
 
             <div className="max-w-7xl mx-auto px-4 py-2">
@@ -159,14 +157,14 @@ export default function Header() {
                 </div>
 
                 {/* Perks bar */}
-                <div className="flex justify-center items-center gap-4 py-2 overflow-x-auto text-sm border-t">
+                {/* <div className="flex justify-center items-center gap-4 py-2 overflow-x-auto text-sm border-t">
                     {perks.map((perk, index) => (
                         <div key={index} className="flex items-center gap-1 flex-shrink-0">
                             <span>{perk.icon}</span>
                             <span>{perk.text}</span>
                         </div>
                     ))}
-                </div>
+                </div> */}
             </div>
 
             {/* Mobile menu */}
