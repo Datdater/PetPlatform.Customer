@@ -9,8 +9,8 @@ import Checkout from "@/pages/checkout/Checkout";
 import OrderCustomerPage from "@/pages/profile/order-customer";
 import Search from "@/pages/search/Search";
 import StorePage from "@/pages/store/StorePage";
-import Layout from "@/components/layouts/layout";
-import UserLayout from "@/components/layouts/userLayout";
+import Layout from "../components/layouts/layout";
+import UserLayout from "../components/layouts/layout";
 const MainRouter = () => {
     return (
         <BrowserRouter>
