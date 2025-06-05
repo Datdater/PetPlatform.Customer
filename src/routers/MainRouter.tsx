@@ -9,8 +9,8 @@ import Checkout from "@/pages/checkout/Checkout";
 import OrderCustomerPage from "@/pages/profile/order-customer";
 import Search from "@/pages/search/Search";
 import StorePage from "@/pages/store/StorePage";
-import Layout from "@/components/layouts/Layout";
-import UserLayout from "@/components/layouts/UserLayout";
+import Layout from "@/components/Layouts/Layout";
+import UserLayout from "@/components/Layouts/UserLayout";
 const MainRouter = () => {
     return (
         <BrowserRouter>
@@ -25,30 +25,33 @@ const MainRouter = () => {
                         <Route path="/product/:id" element={
                             <ProductDetail />
                         } />
-                        <UserLayout>
-                            <Route path="/user/profile" element={
+                        <Route path="/user/profile" element={
+                            <UserLayout>
                                 <ProfileCustomer />
-                            } />
-                            <Route path="/user/address" element={
+                            </UserLayout>
+                        } />
+                        <Route path="/user/address" element={
+                            <UserLayout>
                                 <AddressCustomer />
-                            } />
-                            <Route path="/cart" element={
-                                <CartPage />
-                            } />
-                            <Route path="/checkout" element={
-                                <Checkout />
-                            } />
-                            <Route path="/user/orders" element={
+                            </UserLayout>
+                        } />
+                        <Route path="/cart" element={
+                            <CartPage />
+                        } />
+                        <Route path="/checkout" element={
+                            <Checkout />
+                        } />
+                        <Route path="/user/orders" element={
+                            <UserLayout>
                                 <OrderCustomerPage />
-                            } />
-                        </UserLayout>
-
-                            <Route path="/search" element={
-                                <Search />
-                            } />
-                            <Route path="/store/:id" element={
-                                <StorePage />
-                            } />
+                            </UserLayout>
+                        } />
+                        <Route path="/search" element={
+                            <Search />
+                        } />
+                        <Route path="/store/:id" element={
+                            <StorePage />
+                        } />
                     </Routes>
                 </Layout>
             </UserProvider>
