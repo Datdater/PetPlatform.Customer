@@ -1,5 +1,5 @@
 import UserProvider from "@/store/contexts/UserContext";
-import UserSidebar from "./navigation";
+import UserSidebar from "@/components/layouts/navigation";
 
 const UserLayout = ({ children }: { children: React.ReactNode }) => {
   return (

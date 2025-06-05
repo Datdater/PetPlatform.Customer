@@ -1,6 +1,6 @@
 import { useCartInit } from '@/hooks/useCartInit';
-import Footer from "./footer";
-import Header from "./header";
+import Header from '@/components/layouts/header';
+import Footer from '@/components/layouts/footer';
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
     useCartInit(); 
