@@ -1,7 +1,7 @@
 import UserProvider from "@/store/contexts/UserContext";
 import UserSidebar from "./navigation";
 
-const UserLayout = ({ children }: { children: React.ReactNode }) => {
+const userLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <UserProvider>
       <div className="min-h-screen flex mt-2">
@@ -12,4 +12,4 @@ const UserLayout = ({ children }: { children: React.ReactNode }) => {
   );
 }
 
-export default UserLayout;
+export default userLayout;

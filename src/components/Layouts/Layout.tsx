@@ -2,7 +2,7 @@ import { useCartInit } from '@/hooks/useCartInit';
 import Header from './header';
 import Footer from './footer';
 
-const Layout = ({ children }: { children: React.ReactNode }) => {
+const layout = ({ children }: { children: React.ReactNode }) => {
     useCartInit(); 
     return (
         <div className="min-h-screen flex flex-col">
@@ -15,4 +15,4 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
     );
 }
 
-export default Layout;
+export default layout;
