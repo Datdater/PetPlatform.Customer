@@ -92,7 +92,7 @@ const ProfileCustomer: React.FC = () => {
     <div className="min-h-screen bg-background flex justify-center items-start py-10 px-2">
       <div className="flex-1 ml-8">
         <div className="min-h-screen bg-background py-10 px-2 flex justify-center items-start">
-          <div className="w-full max-w-3xl bg-card rounded-2xl shadow-2xl p-8 flex flex-col gap-10">
+          <div className="w-full max-w-3xl bg-card rounded-2xl border p-8 flex flex-col gap-10">
             <div className="flex flex-col md:flex-row md:items-center gap-8 border-b pb-8">
               <div className="flex flex-col items-center md:items-start gap-3">
                 <div className="relative">

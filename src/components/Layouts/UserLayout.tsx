@@ -4,7 +4,7 @@ import UserSidebar from "./navigation";
 const UserLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <UserProvider>
-      <div className="min-h-screen flex">
+      <div className="min-h-screen flex mt-2">
         <UserSidebar />
         <main className="flex-1 ml-8">{children}</main>
       </div>

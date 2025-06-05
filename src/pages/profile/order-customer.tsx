@@ -166,7 +166,7 @@ export default function OrderCustomerPage() {
       ) : (
         <div className="space-y-8">
           {orders.map((order) => (
-            <div key={order.id} className="bg-white rounded-2xl shadow-xl p-6 border border-orange-100 hover:shadow-2xl transition-shadow">
+            <div key={order.id} className="bg-white rounded-2xl  p-6 border  ">
               <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4 gap-2">
                 <div>
                   <div className="text-lg font-semibold text-orange-700">

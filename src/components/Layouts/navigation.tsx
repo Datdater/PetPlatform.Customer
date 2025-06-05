@@ -32,7 +32,7 @@ const UserSidebar = () => {
   }
 
   return (
-    <aside className="w-72 bg-gradient-to-b from-orange-50 to-white p-6 rounded-2xl shadow-xl flex flex-col items-center border border-orange-100">
+    <aside className="w-72 bg-gradient-to-b  p-6 rounded-2xl  flex flex-col items-center border ">
       <div className="flex flex-col items-center mb-6 w-full">
         <div className="relative">
           <img
