@@ -1,40 +1,35 @@
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "@/store/contexts/UserContext";
-import { orderService } from "@/services/order.service";
+import { Order, orderService } from "@/services/order.service";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { formatVnPrice } from "@/utils/formatPrice";
+import { motion } from "framer-motion";
+import { Loader2, Package, Truck, CheckCircle, XCircle, Clock, RefreshCw } from "lucide-react";
 
 const PAGE_SIZE = 5;
 
 const STATUS_TABS = [
-  { key: "all", label: "Tất cả" },
-  { key: "PendingPayment", label: "Chờ thanh toán" },
-  { key: "Confirmed", label: "Đã xác nhận" },
-  { key: "Shipping", label: "Đang vận chuyển" },
-  { key: "Delivered", label: "Đã giao hàng" },
-  { key: "Cancelled", label: "Đã hủy" },
-  { key: "Refunded", label: "Đã hoàn tiền" },
+  { key: "all", label: "Tất cả", icon: Package },
+  { key: "PendingPayment", label: "Chờ thanh toán", icon: Clock },
+  { key: "Confirmed", label: "Đã xác nhận", icon: CheckCircle },
+  { key: "Shipping", label: "Đang vận chuyển", icon: Truck },
+  { key: "Delivered", label: "Đã giao hàng", icon: CheckCircle },
+  { key: "Cancelled", label: "Đã hủy", icon: XCircle },
+  { key: "Refunded", label: "Đã hoàn tiền", icon: RefreshCw },
 ];
 
-interface OrderDetail {
-  quantity: number;
-  price: number;
-  productVariationId: string;
-  productName: string;
-  pictureUrl: string;
-  productId: string;
-  attribute: string;
-}
-
-interface Order {
-  id: string;
-  storeId: string;
-  price: number;
-  orderDetailDTOs: OrderDetail[];
-  orderStatus: string;
-  createdAt: string;
-}
+const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return new Intl.DateTimeFormat('vi-VN', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false
+    }).format(date);
+};
 
 export default function OrderCustomerPage() {
   const user = useContext(UserContext);
@@ -110,13 +105,13 @@ export default function OrderCustomerPage() {
 
   function getStatusColor(status: string) {
     switch (status) {
-      case "Delivered": return "bg-green-100 text-green-700";
-      case "Cancelled": return "bg-red-100 text-red-700";
-      case "PendingPayment": return "bg-yellow-100 text-yellow-700";
-      case "Confirmed": return "bg-blue-100 text-blue-700";
-      case "Shipping": return "bg-purple-100 text-purple-700";
-      case "Refunded": return "bg-gray-200 text-gray-700";
-      default: return "bg-gray-100 text-gray-700";
+      case "Delivered": return "bg-green-100 text-green-700 border-green-200";
+      case "Cancelled": return "bg-red-100 text-red-700 border-red-200";
+      case "PendingPayment": return "bg-yellow-100 text-yellow-700 border-yellow-200";
+      case "Confirmed": return "bg-blue-100 text-blue-700 border-blue-200";
+      case "Shipping": return "bg-purple-100 text-purple-700 border-purple-200";
+      case "Refunded": return "bg-gray-100 text-gray-700 border-gray-200";
+      default: return "bg-gray-100 text-gray-700 border-gray-200";
     }
   }
 
@@ -137,77 +132,127 @@ export default function OrderCustomerPage() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto py-8 px-2">
-      <h1 className="text-3xl font-bold mb-8 text-center">Đơn hàng của tôi</h1>
+    <div className="max-w-4xl mx-auto py-8 px-4">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="text-center mb-8"
+      >
+        <h1 className="text-3xl font-bold text-gray-900">Đơn hàng của tôi</h1>
+        <p className="mt-2 text-sm text-gray-600">Theo dõi và quản lý đơn hàng của bạn</p>
+      </motion.div>
+
       {/* Custom Tabs */}
       <div className="mb-6 flex flex-wrap gap-2 justify-center">
-        {STATUS_TABS.map((t) => (
-          <button
-            key={t.key}
-            className={`px-4 py-2 rounded-full border font-medium transition-colors shadow-sm
-              ${tab === t.key
-                ? "border-orange-500 text-orange-600 bg-orange-50"
-                : "border-gray-200 text-gray-500 hover:bg-gray-100"}
-            `}
-            onClick={() => handleTabChange(t.key)}
-          >
-            {t.label}
-          </button>
-        ))}
+        {STATUS_TABS.map((t) => {
+          const Icon = t.icon;
+          return (
+            <motion.button
+              key={t.key}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className={`px-4 py-2 rounded-full border font-medium transition-all duration-200 shadow-sm flex items-center gap-2
+                ${tab === t.key
+                  ? "border-orange-500 text-orange-600 bg-orange-50"
+                  : "border-gray-200 text-gray-500 hover:bg-gray-50"}
+              `}
+              onClick={() => handleTabChange(t.key)}
+            >
+              <Icon className="w-4 h-4" />
+              {t.label}
+            </motion.button>
+          );
+        })}
       </div>
+
       {/* Tab Content */}
       {loading ? (
-        <div className="text-center py-16 text-muted-foreground text-lg font-medium animate-pulse">Đang tải...</div>
-      ) : orders.length === 0 ? (
-        <div className="text-center text-gray-400 py-16">
-          <img src="/empty-orders.svg" alt="No orders" className="mx-auto mb-4 w-32" />
-          <div className="text-lg">Bạn chưa có đơn hàng nào.</div>
+        <div className="flex flex-col items-center justify-center py-16">
+          <Loader2 className="h-8 w-8 animate-spin text-orange-600 mb-4" />
+          <p className="text-gray-600">Đang tải đơn hàng của bạn...</p>
         </div>
+      ) : orders.length === 0 ? (
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-center py-16 bg-gray-50 rounded-2xl"
+        >
+          <Package className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+          <p className="text-gray-500 text-lg mb-4">Bạn chưa có đơn hàng nào</p>
+          <Button 
+            variant="outline" 
+            className="border-orange-200 text-orange-600 hover:bg-orange-50"
+            onClick={() => window.location.href = '/search'}
+          >
+            Mua sắm ngay
+          </Button>
+        </motion.div>
       ) : (
-        <div className="space-y-8">
-          {orders.map((order) => (
-            <div key={order.id} className="bg-white rounded-2xl  p-6 border  ">
-              <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4 gap-2">
-                <div>
-                  <div className="text-lg font-semibold text-orange-700">
-                    Mã đơn: {shortOrderId(order.id)}
+        <div className="space-y-6">
+          {orders.map((order, index) => (
+            <motion.div
+              key={order.id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.1 }}
+            >
+              <div className="bg-white rounded-2xl p-6 border hover:shadow-md transition-shadow duration-200">
+                <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-4 gap-2">
+                  <div>
+                    <div className="text-lg font-semibold text-orange-700">
+                      Mã đơn: {shortOrderId(order.id)}
+                    </div>
+                    <div className="text-gray-500 text-sm">Ngày đặt: {formatDate(order.createdTime)}</div>
                   </div>
-                  <div className="text-gray-500 text-sm">Ngày đặt: {order.createdAt}</div>
+                  <span className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-sm font-medium border ${getStatusColor(order.orderStatus)}`}>
+                    {getStatusLabel(order.orderStatus)}
+                  </span>
                 </div>
-                <span className={`inline-block px-4 py-1 rounded-full text-xs font-semibold mt-2 md:mt-0 ${getStatusColor(order.orderStatus)}`}>
-                  {getStatusLabel(order.orderStatus)}
-                </span>
-              </div>
-              <div className="divide-y">
-                {order.orderDetailDTOs.map((item, idx) => (
-                  <div key={item.productVariationId + idx} className="flex items-center py-4 gap-4">
-                    <img src={item.pictureUrl} alt={item.productName} className="w-20 h-20 rounded-lg object-cover border bg-gray-50" />
-                    <div className="flex-1 min-w-0">
-                      <div className="font-medium truncate text-base">{item.productName}</div>
-                      <div className="text-gray-500 text-sm truncate">{parseAttributes(item.attribute)}</div>
+                <div className="divide-y">
+                  {order.orderDetailDTOs.map((item, idx) => (
+                    <div key={item.productVariationId + idx} className="flex items-center py-4 gap-4">
+                      <div className="relative w-20 h-20 rounded-lg overflow-hidden border bg-gray-50">
+                        <img 
+                          src={item.pictureUrl} 
+                          alt={item.productName} 
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="font-medium truncate text-base">{item.productName}</div>
+                        <div className="text-gray-500 text-sm truncate">{parseAttributes(item.attribute)}</div>
+                      </div>
+                      <div className="text-right min-w-[120px]">
+                        <div className="font-semibold text-orange-600">{formatVnPrice(item.price)}</div>
+                        <div className="text-gray-500 text-xs">x {item.quantity}</div>
+                      </div>
                     </div>
-                    <div className="text-right min-w-[120px]">
-                      <div className="font-semibold text-orange-600">{formatVnPrice(item.price)}</div>
-                      <div className="text-gray-500 text-xs">x {item.quantity}</div>
-                    </div>
+                  ))}
+                </div>
+                <div className="flex flex-col items-end gap-2 mt-4 pt-4 border-t">
+                  <div className="text-sm text-gray-600">
+                    Phí vận chuyển: {formatVnPrice(order.deliveryPrice)}
                   </div>
-                ))}
+                  <div className="text-xl font-bold text-orange-600">
+                    Tổng: {formatVnPrice(order.price)}
+                  </div>
+                </div>
               </div>
-              <div className="flex justify-end mt-6">
-                <span className="text-xl font-bold text-orange-600">
-                  Tổng: {formatVnPrice(calculateOrderTotal(order))}
-                </span>
-              </div>
-            </div>
+            </motion.div>
           ))}
+
           {/* Pagination */}
-          <div className="flex justify-center mt-8 gap-2">
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="flex justify-center mt-8 gap-2"
+          >
             <Button
               variant="outline"
               size="sm"
               disabled={!pagination.hasPrevious}
               onClick={() => setPage((p) => Math.max(1, p - 1))}
-              className="rounded-full border-orange-200"
+              className="rounded-full border-orange-200 text-orange-600 hover:bg-orange-50"
             >
               Trang trước
             </Button>
@@ -217,11 +262,11 @@ export default function OrderCustomerPage() {
               size="sm"
               disabled={!pagination.hasNext}
               onClick={() => setPage((p) => p + 1)}
-              className="rounded-full border-orange-200"
+              className="rounded-full border-orange-200 text-orange-600 hover:bg-orange-50"
             >
               Trang sau
             </Button>
-          </div>
+          </motion.div>
         </div>
       )}
     </div>

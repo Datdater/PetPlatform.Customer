@@ -6,6 +6,7 @@ const navItems = [
   { label: "Thông Báo", icon: <i className="fa-regular fa-bell text-primary" />, to: "/user/notifications" },
   { label: "Hồ Sơ", icon: <i className="fa-solid fa-id-card text-primary" />, to: "/user/profile" },
   { label: "Địa Chỉ", icon: <i className="fa-solid fa-location-dot text-primary" />, to: "/user/address" },
+  { label: "Thú cưng", icon: <i className="fa-solid fa-location-dot text-primary" />, to: "/user/pets" },
   { label: "Đơn Mua", icon: <i className="fa-regular fa-clipboard text-primary" />, to: "/user/orders" },
   { label: "Dịch vụ", icon: <i className="fa-regular fa-clipboard text-primary" />, to: "/user/services" },
   { label: "Ví", icon: <i className="fa-regular fa-clipboard text-primary" />, to: "/user/wallet" },

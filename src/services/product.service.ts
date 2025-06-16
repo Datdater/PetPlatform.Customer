@@ -1,6 +1,6 @@
-import { IResponse } from '@/types/IResponse';
 import { client } from './client';
 import { IAddProduct, IGetProductVariant, IProduct, IProductDetail, IProductReview, IProductVariant, IUpdateProduct } from '@/types/IProduct';
+import { PaginationResponse } from '@/types/common/Pagination';
 
 const BASE_URL = '/products';
 
@@ -19,7 +19,7 @@ export const getProducts = async (
     sortBy?: 'price' | 'rating' | 'popularity';
     sortDescending?: boolean;
   }
-): Promise<IResponse<IProduct>> => {
+): Promise<PaginationResponse<IProduct>> => {
   const response: any = await client.get(BASE_URL, {
     params: {
       pageIndex: pageNumber,

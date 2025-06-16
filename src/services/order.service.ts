@@ -23,8 +23,10 @@ export interface Order {
   id: string;
   storeId: string;
   price: number;
+  deliveryPrice: number;
   orderDetailDTOs: OrderDetail[];
   orderStatus: string;
+  createdTime: string;
 }
 
 export interface CreateOrderDto {
