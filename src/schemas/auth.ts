@@ -13,7 +13,8 @@ export const registerSchema = z.object({
         .min(6, 'Mật khẩu phải có ít nhất 6 ký tự')
         .regex(/[A-Z]/, 'Mật khẩu phải chứa ít nhất một chữ cái in hoa')
         .regex(/[a-z]/, 'Mật khẩu phải chứa ít nhất một chữ cái thường')
-        .regex(/[0-9]/, 'Mật khẩu phải chứa ít nhất một số'),
+        .regex(/[0-9]/, 'Mật khẩu phải chứa ít nhất một số')
+        .regex(/[!@#$%^&*]/, 'Mật khẩu phải chứa ít nhất một ký tự đặc biệt'),
     confirmPassword: z.string(),
     phoneNumber: z.string().min(10, 'Số điện thoại phải có ít nhất 10 ký tự'),
 }).refine((data) => data.password === data.confirmPassword, {
