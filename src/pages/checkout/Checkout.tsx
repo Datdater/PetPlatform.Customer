@@ -318,7 +318,7 @@ export default function Checkout() {
                             className="w-full mt-2"
                             onClick={() => {
                               setIsAddressDialogOpen(false);
-                              navigate("/profile/address");
+                              navigate("/user/address");
                             }}
                           >
                             Thêm địa chỉ mới
