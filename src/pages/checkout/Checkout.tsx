@@ -331,7 +331,7 @@ export default function Checkout() {
               ) : (
                 <div className="text-center py-4">
                   <p className="text-gray-500 mb-4">Bạn chưa có địa chỉ nào</p>
-                  <Button onClick={() => navigate("/profile/address")}>
+                  <Button onClick={() => navigate("/user/address")}>
                     Thêm địa chỉ
                   </Button>
                 </div>
