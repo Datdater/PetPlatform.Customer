@@ -4,7 +4,7 @@ import PetServiceCard from "@/components/features/petServices/PetServiceCard";
 import NewestProducts from "@/components/features/products/NewestProduct";
 import { getPetServices } from "@/services/petService.service";
 import { IPetServiceCard } from "@/types/petServices/IPetServiceCard";
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 
 
@@ -47,7 +47,7 @@ export default function Home() {
                                     <NewestProducts />
                                 </div>
                             </div>
-                            <div className="bg-white p-6 rounded-lg shadow-sm border">
+                            <div className="bg-white p-6 rounded-lg shadow-sm border mt-2">
                                 <h2 className="text-xl font-semibold mb-4">Dịch vụ nổi bật</h2>
                                 {/* Featured products grid would go here */}
                                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">

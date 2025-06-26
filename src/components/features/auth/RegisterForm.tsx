@@ -24,7 +24,8 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ isOpen, onClose, onLoginCli
   const sendConfirmationEmail = async (email: string) => {
     try {
       setLoading(true);
-      await sendEmailConfirmation(email);
+      await sendEmailConfirmation({ email: email });
+
       setError(null);
     } catch (error) {
       setError('Không thể gửi email xác nhận. Vui lòng thử lại sau.');
@@ -126,25 +127,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ isOpen, onClose, onLoginCli
           )}
 
           <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <User className="h-5 w-5 text-gray-400" />
-                </div>
-                <Input
-                  type="text"
-                  name="firstName"
-                  placeholder="Tên"
-                  value={formData.firstName}
-                  onChange={(e) => handleChange('firstName', e.target.value)}
-                  className="pl-10"
-                  required
-                />
-              </div>
-              {touched.firstName && errors.firstName && (
-                <p className="mt-1 text-sm text-red-600">{errors.firstName}</p>
-              )}
-            </div>
+            
 
             <div className="space-y-2">
               <div className="relative">
@@ -163,6 +146,25 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ isOpen, onClose, onLoginCli
               </div>
               {touched.lastName && errors.lastName && (
                 <p className="mt-1 text-sm text-red-600">{errors.lastName}</p>
+              )}
+            </div>
+            <div className="space-y-2">
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <User className="h-5 w-5 text-gray-400" />
+                </div>
+                <Input
+                  type="text"
+                  name="firstName"
+                  placeholder="Tên"
+                  value={formData.firstName}
+                  onChange={(e) => handleChange('firstName', e.target.value)}
+                  className="pl-10"
+                  required
+                />
+              </div>
+              {touched.firstName && errors.firstName && (
+                <p className="mt-1 text-sm text-red-600">{errors.firstName}</p>
               )}
             </div>
           </div>

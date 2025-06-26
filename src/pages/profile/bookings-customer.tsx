@@ -6,8 +6,7 @@ import { UserContext } from "@/store/contexts/UserContext";
 import { useNavigate } from 'react-router-dom';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Calendar, Clock, Loader2, Package, Store } from 'lucide-react';
-import { format } from 'date-fns';
+import { Loader2, Package, Store } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const BookingsCustomer: React.FC = () => {

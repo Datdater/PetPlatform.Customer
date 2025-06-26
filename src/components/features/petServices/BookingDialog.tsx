@@ -4,7 +4,6 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { PlusCircle, X, AlertCircle, Calendar } from "lucide-react";
-import { cn } from "@/lib/utils";
 import { getPets } from "@/services/pet.service";
 import { IPet } from "@/services/pet.service";
 import { useNavigate } from "react-router-dom";
@@ -153,7 +152,7 @@ const BookingDialog = ({ isOpen, onClose, petServiceList, storeId }: BookingDial
         }, 0);
     };
 
-    const CustomInput = React.forwardRef<HTMLInputElement, any>(({ value, onClick }, ref) => (
+    const CustomInput = React.forwardRef<HTMLInputElement, any>(({ value }, ref) => (
         <div className="relative w-full">
             <input
                 ref={ref}

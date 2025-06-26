@@ -7,7 +7,7 @@ const BASE_URL = '/products';
 // Get all products with filtering and pagination
 export const getProducts = async (
   pageNumber: number = 1,
-  pageSize: number = 10,
+  pageSize: number = 8,
   filters?: {
     searchTerm?: string;
     categoryId?: string;

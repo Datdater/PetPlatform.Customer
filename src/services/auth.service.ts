@@ -1,5 +1,4 @@
 import { client } from './client';
-import axios from 'axios';
 
 // Auth types
 export interface ILoginRequest {
@@ -27,7 +26,9 @@ export interface IAuthResponse {
   refreshToken: string;
   user: IUser;
 }
-
+export interface IMailRequest {
+  email : string
+}
 const BASE_URL = '/auth';
 
 // Login user
@@ -122,9 +123,9 @@ export const handleAuthError = (error: any): string => {
   }
 };
 
-export const sendEmailConfirmation = async (email: string): Promise<void> => {
+export const sendEmailConfirmation = async (mail: IMailRequest): Promise<void> => {
   try {
-    await axios.get(`/api/auth/email?email=${encodeURIComponent(email)}`);
+    await client.post(`${BASE_URL}/email?email=${mail.email}`);
   } catch (error) {
     throw handleAuthError(error);
   }

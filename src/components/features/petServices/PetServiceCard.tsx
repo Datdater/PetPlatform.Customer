@@ -5,17 +5,11 @@ import { IPetServiceCard } from "@/types/petServices/IPetServiceCard";
 const PetServiceCard = ({
     id,
     name,
-    description,
-    estimatedTime,
     image,
     storeName,
-    storeStreet,
     storeCity,
-    storeWard,
     storeDistrict,
-    categoryName,
     totalUsed,
-    totalReviews,
     ratingAverage,
     status
 }: IPetServiceCard) => {

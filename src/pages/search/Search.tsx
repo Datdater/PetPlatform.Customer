@@ -95,7 +95,7 @@ export default function Search() {
     })
       .then((res) => {
         setProducts(res.items || []);
-        setTotal(res.totalCount || 0);
+        setTotal(res.totalItemsCount || 0);
       })
       .catch(() => setError('Failed to load products'))
       .finally(() => setLoading(false));

@@ -99,9 +99,6 @@ export default function OrderCustomerPage() {
     }
   };
 
-  const calculateOrderTotal = (order: Order) => {
-    return order.orderDetailDTOs.reduce((total, detail) => total + (detail.price * detail.quantity), 0);
-  };
 
   function getStatusColor(status: string) {
     switch (status) {
