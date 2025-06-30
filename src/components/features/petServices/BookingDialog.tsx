@@ -97,7 +97,7 @@ const BookingDialog = ({ isOpen, onClose, petServiceList, storeId }: BookingDial
 
     const handleAddPet = () => {
         onClose();
-        navigate("/profile/pets");
+        navigate("/user/pets");
     };
 
     const handlePetSelect = (petId: string) => {

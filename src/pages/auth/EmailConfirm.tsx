@@ -43,7 +43,6 @@ const EmailConfirm: React.FC = () => {
       {status === "success" && (
         <>
           <div className="text-lg font-semibold text-green-700 mb-2">{message}</div>
-          <a href="/login" className="text-primary font-medium hover:underline">Đăng nhập</a>
         </>
       )}
       {status === "error" && (

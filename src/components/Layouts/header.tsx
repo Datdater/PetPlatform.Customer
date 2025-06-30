@@ -57,7 +57,7 @@ export default function Header() {
                 <div className="flex items-center gap-4 py-2">
                     {/* Logo */}
                     <Link to="/" className="flex-shrink-0">
-                        <img src={logo} alt="Pet Platform Logo" className="h-18 w-auto" />
+                        <img src={logo} alt="Pet Platform Logo" className="h-32 w-auto" />
                     </Link>
 
                     {/* Search bar */}
