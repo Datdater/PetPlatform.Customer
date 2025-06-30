@@ -185,14 +185,13 @@ export default function ProductDetail() {
     };
 
     const handleBuyNow = () => {
+        handleAddToCart();
         requireAuth(() => {
             if (!currentVariant) {
                 toast.error("Vui lòng chọn đầy đủ thông tin sản phẩm");
                 return;
             }
-            // Add your buy now logic here
-            // For example, navigate to checkout page with the selected product
-            window.location.href = `/checkout?productId=${product?.id}&variantId=${currentVariant.id}&quantity=${quantity}`;
+            window.location.href = `/cart`;
         });
     };
 
