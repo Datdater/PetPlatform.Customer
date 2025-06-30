@@ -1,5 +1,6 @@
 import { PaginationResponse } from '@/types/common/Pagination';
 import { client } from './client';
+import { IPet } from './pet.service';
 
 export interface IBookingDetail {
     pet: {
@@ -23,8 +24,12 @@ export interface IBookingResponse {
     bookingTime: string;
     totalPrice: number;
     shopName: string;
+    storeAddressProvince: string;
+    storeAddressDistrict: string;
+    storeAddressWard: string;
+    storeAddressStreet: string;
     status: string;
-    services: IBookingDetailResponse[];
+    petWithServices: IBookingDetailResponse[];
 }
 
 export interface GetBookingParams {
@@ -33,10 +38,14 @@ export interface GetBookingParams {
     userId: string;
 }
 export interface IBookingDetailResponse {
-    serviceName: string;
+    pet: IPet;
+    services: IServiceDetail[];
+}
+export interface IServiceDetail {
+    id: string;
     serviceDetailName: string;
     price: number;
-    image: string;
+    imageUrl: string;
 }
 
 export const createBooking = async (data: ICreateBookingDto): Promise<IBookingResponse> => {

@@ -49,7 +49,7 @@ const UserSidebar = () => {
             <i className="fa-regular fa-pen-to-square text-xs" />
           </NavLink>
         </div>
-        <div className="mt-3 text-lg font-bold text-gray-800">{user.userName || `${user.firstName} ${user.lastName}`}</div>
+        <div className="mt-3 text-lg font-bold text-gray-800">{user.userName || `${user.name}`}</div>
         <div className="text-xs text-gray-400 flex items-center gap-1 mt-1">
           <i className="fa-solid fa-pen text-gray-300" /> Sửa Hồ Sơ
         </div>

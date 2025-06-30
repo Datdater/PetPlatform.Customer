@@ -15,6 +15,7 @@ import PetServiceDetail from "@/pages/petService/PetServiceDetail";
 import Payment from "@/pages/payment/Payment";
 import PetsCustomer from "@/pages/profile/pets-customer";
 import BookingsCustomer from "@/pages/profile/bookings-customer";
+import EmailConfirm from "@/pages/auth/EmailConfirm";
 const MainRouter = () => {
     return (
         <BrowserRouter>
@@ -73,6 +74,7 @@ const MainRouter = () => {
                         <Route path="/service/:id" element={
                             <PetServiceDetail />
                         } />
+                        <Route path="/email-confirm" element={<EmailConfirm />} />
                     </Routes>
                 </Layout>
             </UserProvider>

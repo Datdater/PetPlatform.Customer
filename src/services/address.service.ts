@@ -28,21 +28,21 @@ export interface CreateAddressDto {
 
 export const addressService = {
   getAll: async (userId: string): Promise<Address[]> => {
-    const response = await client.get<Address[]>(`/customer/${userId}/address`);
+    const response = await client.get<Address[]>(`/customers/${userId}/address`);
     return response.data;
   },
 
   create: async (userId: string, data: CreateAddressDto): Promise<Address> => {
-    const response = await client.post<Address>(`/customer/${userId}/address`, data);
+    const response = await client.post<Address>(`/customers/${userId}/address`, data);
     return response.data;
   },
 
   update: async (userId: string, id: string, data: CreateAddressDto): Promise<Address> => {
-    const response = await client.put<Address>(`/customer/${userId}/address/${id}`, data);
+    const response = await client.put<Address>(`/customers/${userId}/address/${id}`, data);
     return response.data;
   },
 
   delete: async (userId: string, id: string): Promise<void> => {
-    await client.delete(`/customer/${userId}/address/${id}`);
+    await client.delete(`/customers/${userId}/address/${id}`);
   },
 }; 

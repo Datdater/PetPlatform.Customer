@@ -40,7 +40,7 @@ const PetsCustomer: React.FC = () => {
             };
             const res = await getPets(params);
             setPets(res.items);
-            setTotalPages(res.totalPagesCount);
+            setTotalPages(res.totalCount);
         } catch (error) {
             console.error('Error fetching pets:', error);
         } finally {

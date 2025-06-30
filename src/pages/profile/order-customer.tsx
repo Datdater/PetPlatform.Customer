@@ -72,9 +72,9 @@ export default function OrderCustomerPage() {
         }))
       );
       setPagination({
-        hasNext: res.next,
-        hasPrevious: res.previous,
-        totalPages: res.totalPagesCount,
+        hasNext: res.hasNextPage,
+        hasPrevious: res.hasPreviousPage,
+        totalPages: res.totalCount,
       });
     } catch (e) {
       toast.error("Không thể tải đơn hàng");
@@ -88,16 +88,14 @@ export default function OrderCustomerPage() {
     setPage(1);
   };
 
-  const parseAttributes = (attributes: string) => {
-    try {
-      const parsed = JSON.parse(attributes);
-      return Object.entries(parsed)
-        .map(([key, value]) => `${key}: ${value}`)
-        .join(", ");
-    } catch {
-      return attributes;
-    }
+  const parseAttributes = (attributes: Record<string, string>) => {
+    return Object.entries(attributes)
+      .map(([key, value]) => `${key}: ${value}`)
+      .join(", ");
   };
+  
+  
+  
 
 
   function getStatusColor(status: string) {

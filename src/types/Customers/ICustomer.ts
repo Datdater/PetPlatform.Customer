@@ -5,8 +5,7 @@ export interface ICustomerProfile {
     wallet: string;
     email: string;
     phoneNumber: string | null;
-    firstName: string;
-    lastName: string;
+    name: string;
     address: string | null;
     city: string | null;
     state: string | null;

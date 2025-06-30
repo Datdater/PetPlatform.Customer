@@ -1,7 +1,9 @@
 import axios from 'axios';
 import { refreshToken } from './auth.service';
 
-const API_URL = 'https://prn-222.food/api/v1';
+// const API_URL = 'https://prn-222.food/api/v1';
+const API_URL = 'https://localhost:7246/api/v1';
+
 
 export const client = axios.create({
     baseURL: API_URL,

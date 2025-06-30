@@ -130,7 +130,7 @@ export default function Checkout() {
           productName: item.productName,
           pictureUrl: item.pictureUrl,
           productId: item.id,
-          attribute: item.attributes || ""
+          attribute: item.attributes || {}
         }));
 
       // Map payment method to enum value
@@ -144,21 +144,8 @@ export default function Checkout() {
       const orderData = {
         storeId: cart.items[0]?.storeId || "", // Assuming all items are from the same store
         customerId: user.id,
-        address: {
-          phoneNumber: selectedAddress.phoneNumber,
-          street: selectedAddress.street,
-          city: selectedAddress.city,
-          ward: selectedAddress.ward,
-          district: selectedAddress.district
-        },
-        addressStore: {
-          // TODO: Get store address from API or context
-          phoneNumber: "0123456789",
-          street: "123 Store Street",
-          city: "Hồ Chí Minh",
-          ward: "Phường 1",
-          district: "Quận 1"
-        },
+        addressId: selectedAddress.id,
+        addressStoreId: selectedAddress.id,
         paymentMethod: paymentMethodValue,
         promotionId: "", // TODO: Add promotion handling
         deliveryPrice: shippingFee,

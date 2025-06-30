@@ -16,12 +16,13 @@ export interface OrderDetail {
   productName: string;
   pictureUrl: string;
   productId: string;
-  attribute: string;
+  attribute: Record<string, string>;
 }
 
 export interface Order {
   id: string;
   storeId: string;
+  storeName: string;
   price: number;
   deliveryPrice: number;
   orderDetailDTOs: OrderDetail[];
@@ -32,20 +33,8 @@ export interface Order {
 export interface CreateOrderDto {
   storeId: string;
   customerId: string;
-  address: {
-    phoneNumber: string;
-    street: string;
-    city: string;
-    ward: string;
-    district: string;
-  };
-  addressStore: {
-    phoneNumber: string;
-    street: string;
-    city: string;
-    ward: string;
-    district: string;
-  };
+  addressId : string;
+  addressStoreId: string;
   paymentMethod: number;
   promotionId: string;
   deliveryPrice: number;
@@ -62,11 +51,11 @@ export interface GetOrdersParams {
 
 export const orderService = {
   createOrder: async (data: CreateOrderDto): Promise<OrderResponse> => {
-    const response = await client.post<OrderResponse>('/order', data);
+    const response = await client.post<OrderResponse>('/orders', data);
     return response.data;
   },
   getOrders: async (params: GetOrdersParams): Promise<PaginationResponse<Order>> => {
-    const response = await client.get<PaginationResponse<Order>>('/order', { params });
+    const response = await client.get<PaginationResponse<Order>>('/orders', { params });
     return response.data;
   },
 }; 

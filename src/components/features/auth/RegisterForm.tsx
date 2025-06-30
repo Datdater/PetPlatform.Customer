@@ -44,8 +44,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ isOpen, onClose, onLoginCli
     initialValues: {
       email: '',
       password: '',
-      firstName: '',
-      lastName: '',
+      name: '',
       confirmPassword: '',
       phoneNumber: '',
     },
@@ -89,9 +88,9 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ isOpen, onClose, onLoginCli
               <p>Vui lòng kiểm tra email của bạn để xác nhận tài khoản.</p>
               <p className="mt-2">Email đã gửi đến: {registeredEmail}</p>
             </div>
-            <Button 
-              onClick={handleResendEmail} 
-              className="w-full" 
+            <Button
+              onClick={handleResendEmail}
+              className="w-full"
               disabled={loading}
             >
               {loading ? 'Đang gửi...' : 'Gửi lại email xác nhận'}
@@ -114,7 +113,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ isOpen, onClose, onLoginCli
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-lg">
         <DialogHeader>
           <DialogTitle className="text-center text-2xl font-bold">Đăng Ký</DialogTitle>
         </DialogHeader>
@@ -127,7 +126,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ isOpen, onClose, onLoginCli
           )}
 
           <div className="grid grid-cols-2 gap-4">
-            
+
 
             <div className="space-y-2">
               <div className="relative">
@@ -136,59 +135,41 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ isOpen, onClose, onLoginCli
                 </div>
                 <Input
                   type="text"
-                  name="lastName"
-                  placeholder="Họ"
-                  value={formData.lastName}
-                  onChange={(e) => handleChange('lastName', e.target.value)}
+                  name="name"
+                  placeholder="Họ và tên"
+                  value={formData.name}
+                  onChange={(e) => handleChange('name', e.target.value)}
                   className="pl-10"
                   required
                 />
               </div>
-              {touched.lastName && errors.lastName && (
-                <p className="mt-1 text-sm text-red-600">{errors.lastName}</p>
+              {touched.name && errors.name && (
+                <p className="mt-1 text-sm text-red-600">{errors.name}</p>
               )}
             </div>
             <div className="space-y-2">
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <User className="h-5 w-5 text-gray-400" />
+                  <Mail className="h-5 w-5 text-gray-400" />
                 </div>
                 <Input
-                  type="text"
-                  name="firstName"
-                  placeholder="Tên"
-                  value={formData.firstName}
-                  onChange={(e) => handleChange('firstName', e.target.value)}
+                  type="email"
+                  name="email"
+                  placeholder="Email"
+                  value={formData.email}
+                  onChange={(e) => handleChange('email', e.target.value)}
                   className="pl-10"
                   required
                 />
+
               </div>
-              {touched.firstName && errors.firstName && (
-                <p className="mt-1 text-sm text-red-600">{errors.firstName}</p>
+              {touched.email && errors.email && (
+                <p className="mt-1 text-sm text-red-600">{errors.email}</p>
               )}
             </div>
           </div>
 
-          <div className="space-y-2">
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Mail className="h-5 w-5 text-gray-400" />
-              </div>
-              <Input
-                type="email"
-                name="email"
-                placeholder="Email"
-                value={formData.email}
-                onChange={(e) => handleChange('email', e.target.value)}
-                className="pl-10"
-                required
-              />
 
-            </div>
-            {touched.email && errors.email && (
-              <p className="mt-1 text-sm text-red-600">{errors.email}</p>
-            )}
-          </div>
 
           <div className="space-y-2">
             <div className="relative">

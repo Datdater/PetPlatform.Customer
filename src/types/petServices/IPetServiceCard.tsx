@@ -17,6 +17,7 @@ export interface IPetServiceCard {
     totalReviews: number;
     ratingAverage: number;
     petServiceDetails: IPetServiceDetail[];
+    price: number;
 }
 
 export interface IPetServiceDetail {

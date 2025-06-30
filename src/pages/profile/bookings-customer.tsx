@@ -36,7 +36,7 @@ const BookingsCustomer: React.FC = () => {
             };
             const res = await getBooking(params);
             setBookings(res.items);
-            setTotalPages(res.totalPagesCount);
+            setTotalPages(res.totalCount);
         } catch (error) {
             console.error('Error fetching bookings:', error);
         } finally {
@@ -137,29 +137,29 @@ const BookingsCustomer: React.FC = () => {
                                             <Store className="w-5 h-5 text-orange-600" />
                                         </div>
                                         <div className="flex-1">
-                                            <div className="font-semibold text-gray-900">Pet Care Center - Quận 1</div>
-                                            <div className="text-sm text-gray-600">123 Nguyễn Huệ, Quận 1, TP.HCM</div>
+                                            <div className="font-semibold text-gray-900">{booking.shopName}</div>
+                                            <div className="text-sm text-gray-600">{booking.storeAddressStreet}, {booking.storeAddressWard}, {booking.storeAddressDistrict}, {booking.storeAddressProvince}</div>
                                         </div>
                                     </div>
                                     <div className="divide-y">
-                                        {booking.services.map((detail, idx) => (
+                                        {booking.petWithServices.map((detail, idx) => (
                                             <div key={idx} className="flex items-center py-3 gap-4">
                                                 <div className="w-36 h-36 rounded-lg bg-orange-50 flex items-center justify-center">
-                                                    <img src={detail.image} alt={detail.serviceName} className="w-full h-full object-cover" />
+                                                    <img src={detail.services[0].imageUrl} alt={detail.pet.name} className="w-full h-full object-cover" />
                                                 </div>
                                                 <div className="flex-1 min-w-0">
-                                                    <div className="font-medium truncate text-base">{detail.serviceName}</div>
-                                                    <div className="text-gray-500 text-sm truncate">{detail.serviceDetailName}</div>
+                                                    <div className="font-medium truncate text-base">{detail.pet.name}</div>
+                                                    <div className="text-gray-500 text-sm truncate">{detail.services[0].serviceDetailName}</div>
                                                 </div>
                                                 <div className="text-right min-w-[120px]">
-                                                    <div className="font-semibold text-orange-600">{formatPrice(detail.price)}</div>
+                                                    <div className="font-semibold text-orange-600">{formatPrice(detail.services[0].price)}</div>
                                                 </div>
                                             </div>
                                         ))}
                                     </div>
                                     <div className="flex justify-end mt-4 pt-3 border-t">
                                         <span className="text-lg font-bold text-orange-600">
-                                            Tổng: {formatPrice(booking.services.reduce((total, service) => total + service.price, 0))}
+                                            Tổng: {formatPrice(booking.totalPrice)}
                                         </span>
                                     </div>
                                 </Card>

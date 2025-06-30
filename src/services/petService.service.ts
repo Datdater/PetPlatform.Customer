@@ -2,7 +2,7 @@ import { client } from "./client";
 import { IPetServiceCard } from "@/types/petServices/IPetServiceCard";
 import { PaginationResponse } from "@/types/common/Pagination";
 
-const BASE_URL = '/PetService';
+const BASE_URL = '/Services';
 
 export const getPetServices = async (
     pageNumber: number = 1,

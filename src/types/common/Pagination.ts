@@ -1,9 +1,8 @@
 export interface PaginationResponse<T> {
-  totalItemsCount: number;
-  pageSize: number;
+  totalCount: number;
   pageIndex: number;
-  totalPagesCount: number;
-  next: boolean;
-  previous: boolean;
+  pageSize: number;
+  hasPreviousPage: boolean;
+  hasNextPage: boolean;
   items: T[];
 } 

@@ -13,7 +13,7 @@ export interface IPet {
     specialRequirement: string;
 }
 
-const BASE_URL = '/pet';
+const BASE_URL = '/pets';
 
 export const getPets = async (
     pageNumber: number = 1,

@@ -9,8 +9,7 @@ const initialProfile: ICustomerProfile = {
   wallet: '',
   email: '',
   phoneNumber: '',
-  firstName: '',
-  lastName: '',
+  name: '',
   address: '',
   city: '',
   state: '',
@@ -106,17 +105,13 @@ const ProfileCustomer: React.FC = () => {
                     <input type="file" id="avatar" accept="image/*" className="hidden" onChange={handleAvatarChange} />
                   </label>
                 </div>
-                <div className="text-xl font-bold text-foreground">{profile.firstName} {profile.lastName}</div>
+                <div className="text-xl font-bold text-foreground">{profile.name}</div>
                 <div className="text-muted-foreground text-sm">{profile.email}</div>
               </div>
               <form onSubmit={handleProfileSubmit} className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-6 mt-6 md:mt-0">
                 <div>
-                  <label className="block text-sm font-medium text-foreground mb-1">Họ</label>
-                  <input type="text" name="firstName" value={profile.firstName} onChange={handleProfileChange} className="w-full px-3 py-2 border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-primary" />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-foreground mb-1">Tên</label>
-                  <input type="text" name="lastName" value={profile.lastName} onChange={handleProfileChange} className="w-full px-3 py-2 border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-primary" />
+                  <label className="block text-sm font-medium text-foreground mb-1">Họ và tên</label>
+                  <input type="text" name="name" value={profile.name} onChange={handleProfileChange} className="w-full px-3 py-2 border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-primary" />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-foreground mb-1">Số điện thoại</label>

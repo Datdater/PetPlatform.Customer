@@ -132,7 +132,7 @@ export default function Header() {
                                             </Avatar>
                                             <div className="flex flex-col items-start text-sm">
                                                 <span className="text-muted-foreground">Tài khoản</span>
-                                                <span className="font-medium">{`${user.firstName} ${user.lastName}`}</span>
+                                                <span className="font-medium">{`${user.name}`}</span>
                                             </div>
                                         </Button>
                                     </DropdownMenuTrigger>
