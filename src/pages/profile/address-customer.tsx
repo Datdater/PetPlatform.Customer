@@ -16,6 +16,7 @@ import { Plus, Pencil, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { addressService, type Address, type CreateAddressDto } from "@/services/address.service";
 import { UserContext } from "@/store/contexts/UserContext";
+import axios from "axios";
 
 const AddressCustomer = () => {
   const user = useContext(UserContext);
@@ -32,11 +33,47 @@ const AddressCustomer = () => {
     isDefault: false,
   });
   const [loading, setLoading] = useState(false);
+  const [cities, setCities] = useState<any[]>([]);
+  const [districts, setDistricts] = useState<any[]>([]);
+  const [wards, setWards] = useState<any[]>([]);
 
   useEffect(() => {
     if (user) fetchAddresses();
     // eslint-disable-next-line
   }, [user]);
+
+  useEffect(() => {
+    if (openDialog) {
+      axios.get("https://open.oapi.vn/location/provinces?size=1000").then((res: any) => {
+        setCities(res.data.data as any[]);
+      });
+    }
+  }, [openDialog]);
+
+  useEffect(() => {
+    if (formData.city) {
+      axios
+        .get(`https://open.oapi.vn/location/districts/${formData.city}?size=1000`)
+        .then((res: any) => {
+          setDistricts(res.data.data as any[]);
+        });
+    } else {
+      setDistricts([]);
+      setWards([]);
+    }
+  }, [formData.city]);
+
+  useEffect(() => {
+    if (formData.district) {
+      axios
+        .get(`https://open.oapi.vn/location/wards/${formData.district}?size=1000`)
+        .then((res: any) => {
+          setWards(res.data.data as any[]);
+        });
+    } else {
+      setWards([]);
+    }
+  }, [formData.district]);
 
   const fetchAddresses = async () => {
     if (!user) return;
@@ -91,15 +128,39 @@ const AddressCustomer = () => {
     }));
   };
 
+  const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+      ...(name === "city" ? { district: "", ward: "" } : {}),
+      ...(name === "district" ? { ward: "" } : {}),
+    }));
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user) return;
+
+    // Find names by id
+    const cityObj = cities.find((c) => c.id === formData.city);
+    const districtObj = districts.find((d) => d.id === formData.district);
+    const wardObj = wards.find((w) => w.id === formData.ward);
+
+    // Prepare data with names
+    const submitData = {
+      ...formData,
+      city: cityObj ? cityObj.name : "",
+      district: districtObj ? districtObj.name : "",
+      ward: wardObj ? wardObj.name : "",
+    };
+
     try {
       if (editingAddress) {
-        await addressService.update(user.id, editingAddress.id, formData);
+        await addressService.update(user.id, editingAddress.id, submitData);
         toast.success("Address updated successfully");
       } else {
-        await addressService.create(user.id, formData);
+        await addressService.create(user.id, submitData);
         toast.success("Address created successfully");
       }
       handleCloseDialog();
@@ -174,34 +235,60 @@ const AddressCustomer = () => {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="ward">Phường/Xã</Label>
-                <Input
-                  id="ward"
-                  name="ward"
-                  value={formData.ward}
-                  onChange={handleInputChange}
-                  required
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="district">Quận/Huyện</Label>
-                <Input
-                  id="district"
-                  name="district"
-                  value={formData.district}
-                  onChange={handleInputChange}
-                  required
-                />
-              </div>
-              <div className="space-y-2">
                 <Label htmlFor="city">Thành phố</Label>
-                <Input
+                <select
                   id="city"
                   name="city"
                   value={formData.city}
-                  onChange={handleInputChange}
+                  onChange={handleSelectChange}
                   required
-                />
+                  className="w-full border rounded px-3 py-2"
+                >
+                  <option value="">Chọn thành phố</option>
+                  {cities.map((city: any) => (
+                    <option key={city.id} value={city.id}>
+                      {city.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="district">Quận/Huyện</Label>
+                <select
+                  id="district"
+                  name="district"
+                  value={formData.district}
+                  onChange={handleSelectChange}
+                  required
+                  className="w-full border rounded px-3 py-2"
+                  disabled={!formData.city}
+                >
+                  <option value="">Chọn quận/huyện</option>
+                  {districts.map((district: any) => (
+                    <option key={district.id} value={district.id}>
+                      {district.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="ward">Phường/Xã</Label>
+                <select
+                  id="ward"
+                  name="ward"
+                  value={formData.ward}
+                  onChange={handleSelectChange}
+                  required
+                  className="w-full border rounded px-3 py-2"
+                  disabled={!formData.district}
+                >
+                  <option value="">Chọn phường/xã</option>
+                  {wards.map((ward: any) => (
+                    <option key={ward.id} value={ward.id}>
+                      {ward.name}
+                    </option>
+                  ))}
+                </select>
               </div>
               <div className="flex items-center space-x-2">
                 <Switch
