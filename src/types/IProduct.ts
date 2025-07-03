@@ -4,7 +4,7 @@ export interface IProduct {
     price: number;
     storeId: string;
     storeName: string;
-    storeLogoUrl: string;
+    storeUrl: string;
     storeProvince: string;
     storeDistrict: string;
     storeWard: string;

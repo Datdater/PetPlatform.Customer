@@ -162,7 +162,7 @@ export default function ProductDetail() {
                         pictureUrl: product!.images[0]!.imageUrl,
                         storeId: product!.storeId,
                         storeName: product!.storeName,
-                        storeUrl: product!.storeLogoUrl || '',
+                        storeUrl: product!.storeUrl || '',
                     });
                     toast.success("Đã thêm vào giỏ hàng!");
                     // Update cart count in Redux
@@ -264,7 +264,7 @@ export default function ProductDetail() {
 
                     {/* Shop Info */}
                     <div className="flex items-center gap-3 mb-2">
-                        <img src={product.storeLogoUrl} alt={product.storeName} className="w-10 h-10 rounded-full border" />
+                        <img src={product.storeUrl} alt={product.storeName} className="w-10 h-10 rounded-full border" />
                         <div>
                             <div className="font-semibold text-base">{product.storeName}</div>
                             <div className="text-xs text-gray-500">{product.storeProvince}</div>

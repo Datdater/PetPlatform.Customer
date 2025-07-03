@@ -146,17 +146,17 @@ export default function CartPage() {
       // Mock: assign storeId and storeName if not present
       const storeId = (item as any).storeId || 'store-1';
       const storeName = (item as any).storeName || 'Cửa hàng ABC';
-      const storeLogoUrl = (item as any).storeLogoUrl || 'https://via.placeholder.com/40x40?text=Shop';
+      const storeUrl = (item as any).storeUrl || 'https://via.placeholder.com/40x40?text=Shop';
       if (!groups[storeId]) {
         groups[storeId] = {
           storeName,
-          storeLogoUrl,
+          storeUrl,
           items: []
         };
       }
       groups[storeId].items.push(item);
       return groups;
-    }, {} as Record<string, { storeName: string; storeLogoUrl: string; items: CartItem[] }>);
+    }, {} as Record<string, { storeName: string; storeUrl: string; items: CartItem[] }>);
   };
 
   if (!user) {
@@ -205,7 +205,7 @@ export default function CartPage() {
               {Object.entries(groupItemsByStore(cart.items)).map(([storeId, group]) => (
                 <div key={storeId} className="border-b last:border-b-0">
                   <div className="flex items-center gap-2 px-4 py-3 bg-gray-50">
-                    <img src={group.storeLogoUrl} alt={group.storeName} className="w-8 h-8 rounded-full border" />
+                    <img src={group.storeUrl} alt={group.storeName} className="w-8 h-8 rounded-full border" />
                     <span className="font-semibold text-base text-gray-700">{group.storeName}</span>
                   </div>
                   {group.items.map((item) => (

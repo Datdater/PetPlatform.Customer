@@ -1,6 +1,7 @@
 import { useCartInit } from '@/hooks/useCartInit';
 import Header from '@/components/Layouts/header';
 import Footer from '@/components/Layouts/footer';
+import { Toaster } from 'sonner';
 
 const layout = ({ children }: { children: React.ReactNode }) => {
     useCartInit(); 
@@ -11,6 +12,7 @@ const layout = ({ children }: { children: React.ReactNode }) => {
                 {children}
             </main>
             <Footer />
+            <Toaster />
         </div>
     );
 }

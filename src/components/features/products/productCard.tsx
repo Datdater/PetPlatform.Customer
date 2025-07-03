@@ -1,10 +1,16 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
-import { Heart, Star, ShoppingCart } from 'lucide-react';
+import { Heart, Star, ShoppingCart, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { ProductCardProps } from '@/types/products/productCard';
+import { UserContext } from '@/store/contexts/UserContext';
+import { cartService } from '@/services/cart.service';
+import { useDispatch } from 'react-redux';
+import { addToCart } from '@/store/slices/CartSlice';
+import { toast } from 'sonner';
+
 export default function ProductCard({
   id,
   title,
@@ -19,8 +25,14 @@ export default function ProductCard({
   isBestseller = false,
   className,
   numberSold,
+  storeId,
+  productVariantId,
+  attributes = {},
 }: ProductCardProps) {
   const [isFavorite, setIsFavorite] = useState(false);
+  const [isAddingToCart, setIsAddingToCart] = useState(false);
+  const user = useContext(UserContext);
+  const dispatch = useDispatch();
 
   // Format price to VND
   const formatPrice = (price: number) => {
@@ -29,6 +41,42 @@ export default function ProductCard({
       currency: 'VND',
       minimumFractionDigits: 0,
     }).format(price);
+  };
+
+  // Handle add to cart
+  const handleAddToCart = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    if (!user) {
+      toast.error('Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng');
+      return;
+    }
+
+    setIsAddingToCart(true);
+    try {
+      const addCartItemData = {
+        userId: user.id,
+        productVariantId: productVariantId || id, // Use provided variant ID or fallback to product ID
+        productName: title,
+        attributes: JSON.stringify(attributes || {}), // Use provided attributes or empty object
+        unitPrice: price,
+        quantity: 1,
+        pictureUrl: imageUrl,
+        storeId: storeId || shopName.replace(/\s+/g, "-").toLowerCase(), // Use provided store ID or generate from shop name
+        storeName: shopName,
+        storeUrl: `/store/${(storeId || shopName).replace(/\s+/g, "-").toLowerCase()}`,
+      };
+
+      await cartService.addItem(addCartItemData);
+      dispatch(addToCart(1)); // Update Redux cart count
+      toast.success('Đã thêm sản phẩm vào giỏ hàng!');
+    } catch (error) {
+      console.error('Error adding to cart:', error);
+      toast.error('Không thể thêm sản phẩm vào giỏ hàng');
+    } finally {
+      setIsAddingToCart(false);
+    }
   };
 
   // Generate stars based on rating
@@ -142,15 +190,25 @@ export default function ProductCard({
           )}
         </div>
 
-        {/* Free shipping badge */}
-        {freeShipping && (
-          <div className="mt-1.5 flex justify-center w-full">
-            <Button variant="default" size="sm" className="w-full gap-2 rounded-full shadow-md">
-              <ShoppingCart className="w-4 h-4" />
-              <span>Thêm vào giỏ</span>
+        {/* Add to cart button */}
+        <div className="mt-1.5 flex justify-center w-full">
+                      <Button 
+              variant="default" 
+              size="sm" 
+              className="w-full gap-2 rounded-full shadow-md" 
+              onClick={handleAddToCart}
+              disabled={isAddingToCart}
+            >
+              {isAddingToCart ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <ShoppingCart className="w-4 h-4" />
+              )}
+              <span>{isAddingToCart ? 'Đang thêm...' : 'Thêm vào giỏ'}</span>
             </Button>
-          </div>
-        )}
+        </div>
+        
+       
       </div>
     </div>
   );

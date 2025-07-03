@@ -32,6 +32,7 @@ const BASE_URL = '/auth';
 
 // Login user
 export const login = async (credentials: ILoginRequest): Promise<IAuthResponse> => {
+  console.log(credentials);
   const response: any = await client.post(`${BASE_URL}/login`, credentials);
   
   // Store tokens in localStorage

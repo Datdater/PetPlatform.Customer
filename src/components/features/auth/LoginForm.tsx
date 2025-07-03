@@ -27,15 +27,18 @@ const LoginForm: React.FC<LoginFormProps> = ({ isOpen, onClose, onRegisterClick 
     handleSubmit: handleFormSubmit,
   } = useForm<LoginFormType>({
     initialValues: {
-      email: '',
+      emailOrUserNameOrPhone: '',
       password: '',
     },
     validationSchema: loginSchema,
     onSubmit: async (values) => {
       try {
+        console.log('Form submitted with values:', values);
+        setError(null); // Clear any previous errors
         await login(values);
         onClose();
       } catch (error) {
+        console.error('Login error:', error);
         setError(handleAuthError(error));
       }
     },
@@ -65,19 +68,19 @@ const LoginForm: React.FC<LoginFormProps> = ({ isOpen, onClose, onRegisterClick 
                 <Mail className="h-5 w-5 text-gray-400" />
               </div>
               <Input
-                type="email"
-                name="email"
-                placeholder="Email"
-                value={formData.email}
-                onChange={(e) => handleChange('email', e.target.value)}
-                onBlur={() => handleBlur('email')}
+                type="text"
+                name="emailOrUserNameOrPhone"
+                placeholder="Email/Tên đăng nhập/Số điện thoại"
+                value={formData.emailOrUserNameOrPhone}
+                onChange={(e) => handleChange('emailOrUserNameOrPhone', e.target.value)}
+                onBlur={() => handleBlur('emailOrUserNameOrPhone')}
                 className="pl-10"
                 required
               />
               
             </div>
-            {touched.email && errors.email && (
-                <p className="mt-1 text-sm text-red-600">{errors.email}</p>
+            {touched.emailOrUserNameOrPhone && errors.emailOrUserNameOrPhone && (
+                <p className="mt-1 text-sm text-red-600">{errors.emailOrUserNameOrPhone}</p>
               )}
           </div>
           
@@ -118,7 +121,12 @@ const LoginForm: React.FC<LoginFormProps> = ({ isOpen, onClose, onRegisterClick 
             </div>
           </div>
           
-          <Button type="submit" className="w-full" disabled={isSubmitting}>
+          <Button 
+            type="submit" 
+            className="w-full" 
+            disabled={isSubmitting}
+            onClick={() => console.log('Login button clicked', { formData, errors, touched })}
+          >
             {isSubmitting ? 'Đang xử lý...' : 'Đăng nhập'}
           </Button>
           

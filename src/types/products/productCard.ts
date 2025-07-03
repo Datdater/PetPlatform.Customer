@@ -14,5 +14,9 @@ export interface ProductCardProps {
     isBestseller?: boolean;
     className?: string;
     numberSold?: number;
+    // Optional cart-related properties
+    storeId?: string;
+    productVariantId?: string;
+    attributes?: Record<string, any>;
   }
   

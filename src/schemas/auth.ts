@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 export const loginSchema = z.object({
-    email: z.string().email('Email không hợp lệ'),
+    emailOrUserNameOrPhone: z.string().min(2, 'Email hoặc tên đăng nhập hoặc số điện thoại phải có ít nhất 2 ký tự'),
     password: z.string().min(6, 'Mật khẩu phải có ít nhất 6 ký tự'),
 });
 
