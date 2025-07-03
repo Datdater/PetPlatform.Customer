@@ -2,7 +2,7 @@ import { client } from './client';
 
 // Auth types
 export interface ILoginRequest {
-  email: string;
+  emailOrUserNameOrPhone: string;
   password: string;
 }
 
