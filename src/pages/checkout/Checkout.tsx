@@ -155,7 +155,15 @@ export default function Checkout() {
       console.log(paymentMethodValue); 
       // Create order
       const orderResponse = await orderService.createOrder(orderData);
-      // console.log(orderResponse);
+
+      // Remove purchased items from cart
+      const purchasedItemIds = cart.items
+        .filter(item => selectedItems.has(item.id))
+        .map(item => item.id);
+      for (const itemId of purchasedItemIds) {
+        await cartService.removeItem(user.id, itemId);
+      }
+
       // If payment method is not COD, create payment
       if (paymentMethodValue !== 0) { // 2 is COD
         // const paymentData = {
@@ -168,7 +176,6 @@ export default function Checkout() {
         // const paymentResponse = await paymentService.createPayment(paymentData);
         
         // Redirect to payment URL
-        // console.log(orderResponse.paymentUrl);
         window.location.href = orderResponse.paymentUrl;
       } else {
         // For COD, just show success message and redirect to orders page
