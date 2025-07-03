@@ -21,7 +21,6 @@ export default function ProductCard({
   reviewCount,
   shopName,
   shopVerified = false,
-  freeShipping = false,
   isBestseller = false,
   className,
   numberSold,
