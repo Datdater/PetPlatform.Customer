@@ -7,6 +7,7 @@ export interface OrderResponse {
   paymentMethod: number;
   price: number;
   createDate: string;
+  paymentUrl: string;
 }
 
 export interface OrderDetail {

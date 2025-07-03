@@ -18,7 +18,6 @@ import { ShoppingBag, CreditCard, Banknote, Truck } from "lucide-react";
 import { addressService, type Address } from "@/services/address.service";
 import { cartService, type Cart, type CartItem } from "@/services/cart.service";
 import { orderService } from "@/services/order.service";
-import { paymentService } from "@/services/payment.service";
 
 // Mock shipping fee calculation (replace with API call later)
 const calculateShippingFee = (address: Address | null, items: CartItem[]): number => {
@@ -158,21 +157,21 @@ export default function Checkout() {
 
       // If payment method is not COD, create payment
       if (paymentMethodValue !== 1) { // 2 is COD
-        const paymentData = {
-          orderId: orderResponse.orderId,
-          customerId: user.id,
-          amount: orderResponse.price,
-          paymentMethod: paymentMethodValue
-        };
+        // const paymentData = {
+        //   orderId: orderResponse.orderId,
+        //   customerId: user.id,
+        //   amount: orderResponse.price,
+        //   paymentMethod: paymentMethodValue
+        // };
 
-        const paymentResponse = await paymentService.createPayment(paymentData);
+        // const paymentResponse = await paymentService.createPayment(paymentData);
         
         // Redirect to payment URL
-        window.location.href = paymentResponse.paymentUrl;
+        window.location.href = orderResponse.paymentUrl;
       } else {
         // For COD, just show success message and redirect to orders page
         toast.success("Đặt hàng thành công!");
-        navigate("/orders");
+        navigate("/user/orders");
       }
     } catch (error) {
       console.error("Order error:", error);
