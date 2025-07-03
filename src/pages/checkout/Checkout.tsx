@@ -134,8 +134,8 @@ export default function Checkout() {
 
       // Map payment method to enum value
       const paymentMethodMap = {
-        "credit_card": 0,
-        "cod": 1
+        "credit_card": 1,
+        "cod": 0
       };
 
       const paymentMethodValue = paymentMethodMap[paymentMethod as keyof typeof paymentMethodMap];
@@ -152,11 +152,12 @@ export default function Checkout() {
         orderDetails: orderDetails
       };
 
+      console.log(paymentMethodValue); 
       // Create order
       const orderResponse = await orderService.createOrder(orderData);
-
+      // console.log(orderResponse);
       // If payment method is not COD, create payment
-      if (paymentMethodValue !== 1) { // 2 is COD
+      if (paymentMethodValue !== 0) { // 2 is COD
         // const paymentData = {
         //   orderId: orderResponse.orderId,
         //   customerId: user.id,
@@ -167,6 +168,7 @@ export default function Checkout() {
         // const paymentResponse = await paymentService.createPayment(paymentData);
         
         // Redirect to payment URL
+        // console.log(orderResponse.paymentUrl);
         window.location.href = orderResponse.paymentUrl;
       } else {
         // For COD, just show success message and redirect to orders page
