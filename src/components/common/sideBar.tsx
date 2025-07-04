@@ -104,7 +104,7 @@ export default function Sidebar() {
 
   return (
     <div 
-      className="bg-white rounded-lg shadow-sm border w-full max-w-[260px]"
+      className="hidden sm:block bg-white rounded-lg shadow-sm border w-full max-w-[260px]"
       onMouseLeave={handleMouseLeave}
     >
       <div className="p-4 font-medium border-b">

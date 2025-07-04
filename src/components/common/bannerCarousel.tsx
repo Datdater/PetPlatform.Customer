@@ -70,7 +70,7 @@ export default function BannerCarousel() {
     }, [emblaApi, onSelect]);
   
     return (
-      <div className="relative max-w-7xl mx-auto my-6 px-4">
+      <div className="relative max-w-7xl mx-auto my-4 px-1 sm:px-4">
         <div className="overflow-hidden rounded-xl" ref={emblaRef}>
           <div className="flex">
             {bannerSlides.map((slide) => (
@@ -79,18 +79,18 @@ export default function BannerCarousel() {
                 className="flex-[0_0_100%] min-w-0 relative"
                 style={{ backgroundColor: slide.backgroundColor }}
               >
-                <div className="flex flex-row-reverse h-[320px]">
-                  <div className="w-1/2 p-4 flex items-center justify-center overflow-hidden">
+                <div className="flex flex-col-reverse md:flex-row-reverse h-40 sm:h-56 md:h-72">
+                  <div className="w-full md:w-1/2 p-2 sm:p-4 flex items-center justify-center overflow-hidden">
                     <img 
                       src={slide.imageUrl} 
                       alt={slide.title}
-                      className="max-h-full object-contain"
+                      className="max-h-full object-contain w-full h-28 sm:h-40 md:h-64"
                     />
                   </div>
-                  <div className="w-1/2 p-8 flex flex-col justify-center items-center">
-                    <h2 className="text-2xl md:text-3xl font-bold mb-4">{slide.title}</h2>
-                    <p className="text-gray-700 mb-6">{slide.description}</p>
-                    <Button asChild className="w-max">
+                  <div className="w-full md:w-1/2 p-3 sm:p-8 flex flex-col justify-center items-center text-center md:items-start md:text-left">
+                    <h2 className="text-lg sm:text-2xl md:text-3xl font-bold mb-2 sm:mb-4">{slide.title}</h2>
+                    <p className="text-gray-700 mb-3 sm:mb-6 text-sm sm:text-base">{slide.description}</p>
+                    <Button asChild className="w-max text-xs sm:text-base">
                       <a href={slide.ctaLink}>{slide.ctaText}</a>
                     </Button>
                   </div>
@@ -99,32 +99,29 @@ export default function BannerCarousel() {
             ))}
           </div>
         </div>
-  
         {/* Navigation arrows */}
         <Button 
           variant="outline" 
           size="icon" 
-          className="absolute top-1/2 left-6 transform -translate-y-1/2 bg-white/80 hover:bg-white rounded-full z-10"
+          className="absolute top-1/2 left-2 sm:left-6 transform -translate-y-1/2 bg-white/80 hover:bg-white rounded-full z-10 p-1 sm:p-2"
           onClick={scrollPrev}
         >
-          <ChevronLeft className="h-5 w-5" />
+          <ChevronLeft className="h-4 w-4 sm:h-5 sm:w-5" />
         </Button>
-        
         <Button 
           variant="outline" 
           size="icon" 
-          className="absolute top-1/2 right-6 transform -translate-y-1/2 bg-white/80 hover:bg-white rounded-full z-10"
+          className="absolute top-1/2 right-2 sm:right-6 transform -translate-y-1/2 bg-white/80 hover:bg-white rounded-full z-10 p-1 sm:p-2"
           onClick={scrollNext}
         >
-          <ChevronRight className="h-5 w-5" />
+          <ChevronRight className="h-4 w-4 sm:h-5 sm:w-5" />
         </Button>
-  
         {/* Dots indicator */}
-        <div className="flex justify-center gap-2 mt-4">
+        <div className="flex justify-center gap-2 mt-2 sm:mt-4">
           {scrollSnaps.map((_, index) => (
             <button
               key={index}
-              className={`w-2.5 h-2.5 rounded-full transition-colors ${
+              className={`w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full transition-colors ${
                 index === selectedIndex ? 'bg-blue-600' : 'bg-gray-300'
               }`}
               onClick={() => scrollTo(index)}

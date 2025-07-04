@@ -44,24 +44,24 @@ export default function Header() {
     return (
         <header className="bg-white border-b">
             {/* Top banner */}
-            <div className="bg-green-50 text-center  text-sm">
-                <div className="flex items-center gap-2 px-6 py-2 text-center justify-center bg-gradient-to-r from-green-200 via-green-100 to-green-50 shadow text-green-900 font-semibold text-base">
+            <div className="bg-green-50 text-center text-sm">
+                <div className="flex items-center gap-2 px-2 sm:px-6 py-2 text-center justify-center bg-gradient-to-r from-green-200 via-green-100 to-green-50 shadow text-green-900 font-semibold text-sm sm:text-base">
                     <span role="img" aria-label="pet" className="text-xl">🐾</span>
                     <span>Sen chọn gì - Pet thích đó</span>
                     <span role="img" aria-label="pet" className="text-xl">🐶</span>
                 </div>
             </div>
 
-            <div className="max-w-7xl mx-auto px-4 py-2">
+            <div className="max-w-7xl mx-auto px-2 sm:px-4 py-2">
                 {/* Main header row */}
-                <div className="flex items-center gap-4 py-2">
+                <div className="flex flex-col md:flex-row items-center gap-2 md:gap-4 py-2">
                     {/* Logo */}
-                    <Link to="/" className="flex-shrink-0">
-                        <img src={logo} alt="Pet Platform Logo" className="h-32 w-auto" />
+                    <Link to="/" className="flex-shrink-0 mb-2 md:mb-0">
+                        <img src={logo} alt="Pet Platform Logo" className="h-10 sm:h-16 md:h-32 w-auto" />
                     </Link>
 
                     {/* Search bar */}
-                    <div className="flex-grow">
+                    <div className="flex-grow w-full md:w-auto mb-2 md:mb-0">
                         <form onSubmit={handleSearch} className="flex">
                             <div className="relative flex-grow">
                                 <Input
@@ -80,7 +80,7 @@ export default function Header() {
                     </div>
 
                     {/* User area */}
-                    <div className="flex items-center gap-6 flex-shrink-0">
+                    <div className="flex items-center gap-4 flex-shrink-0 w-full md:w-auto justify-center md:justify-end">
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
                                 <Button variant="ghost" size="icon" className="relative">
