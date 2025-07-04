@@ -1,14 +1,6 @@
-import { useState, useContext } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Star, ShoppingCart, Loader2 } from 'lucide-react';
-import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
 import { IProduct } from '@/types/IProduct';
-import { UserContext } from '@/store/contexts/UserContext';
-import { cartService } from '@/services/cart.service';
-import { useDispatch } from 'react-redux';
-import { addToCart } from '@/store/slices/CartSlice';
-import { toast } from 'sonner';
 
 interface FlashSaleCardProps extends IProduct {
   discountPercentage?: number;
@@ -19,19 +11,11 @@ export default function FlashSaleCard({
   name,
   productImage,
   price,
-  starAverage,
-  reviewCount,
-  storeName,
-  sold,
-  storeId,
   discountPercentage = 30,
 }: FlashSaleCardProps) {
-  const [isAddingToCart, setIsAddingToCart] = useState(false);
-  const user = useContext(UserContext);
-  const dispatch = useDispatch();
+  const [] = useState(false);
 
   // Calculate original price based on discount
-  const originalPrice = price / (1 - discountPercentage / 100);
 
   // Format price to VND
   const formatPrice = (price: number) => {
@@ -43,62 +27,8 @@ export default function FlashSaleCard({
   };
 
   // Handle add to cart
-  const handleAddToCart = async (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    if (!user) {
-      toast.error('Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng');
-      return;
-    }
-    setIsAddingToCart(true);
-    try {
-      const addCartItemData = {
-        userId: user.id,
-        productVariantId: id,
-        productName: name,
-        attributes: JSON.stringify({}),
-        unitPrice: price,
-        quantity: 1,
-        pictureUrl: productImage,
-        storeId: storeId,
-        storeName: storeName,
-        storeUrl: `/store/${storeId}`,
-      };
-      await cartService.addItem(addCartItemData);
-      dispatch(addToCart(1));
-      toast.success('Đã thêm sản phẩm vào giỏ hàng!');
-    } catch (error) {
-      console.error('Error adding to cart:', error);
-      toast.error('Không thể thêm sản phẩm vào giỏ hàng');
-    } finally {
-      setIsAddingToCart(false);
-    }
-  };
 
   // Generate stars based on rating
-  const renderStars = () => {
-    const stars = [];
-    const fullStars = Math.floor(starAverage);
-    const hasHalfStar = starAverage % 1 >= 0.5;
-    for (let i = 0; i < fullStars; i++) {
-      stars.push(<Star key={`star-${i}`} className="w-3.5 h-3.5 fill-yellow-400 text-yellow-400" />);
-    }
-    if (hasHalfStar) {
-      stars.push(
-        <div key="half-star" className="relative">
-          <Star className="w-3.5 h-3.5 text-gray-300" />
-          <div className="absolute top-0 left-0 overflow-hidden w-1/2">
-            <Star className="w-3.5 h-3.5 fill-yellow-400 text-yellow-400" />
-          </div>
-        </div>
-      );
-    }
-    const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
-    for (let i = 0; i < emptyStars; i++) {
-      stars.push(<Star key={`empty-star-${i}`} className="w-3.5 h-3.5 text-gray-300" />);
-    }
-    return stars;
-  };
 
   // Randomly choose badge type for demo
   const badgeType = Math.random() > 0.5 ? 'hot' : 'low';
