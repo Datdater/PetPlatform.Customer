@@ -332,11 +332,14 @@ export default function ProductDetail() {
                 </div>
             </div>
 
-            <div className='p-6'>
-                <h1 className='text-2xl font-bold'>Mô tả sản phẩm</h1>
-                <div className='flex gap-2'>
-                    {product.description}
-                </div>
+            <div className='p-6 bg-white rounded-lg shadow-sm border mt-6'>
+                <h1 className='text-2xl font-bold mb-6 text-gray-800'>Mô tả sản phẩm</h1>
+                <div 
+                    className='prose prose-sm sm:prose-base max-w-none text-gray-700 leading-relaxed'
+                    dangerouslySetInnerHTML={{
+                        __html: product.description || ''
+                    }}
+                />
             </div>
 
             <div className="mt-12">

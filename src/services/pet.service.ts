@@ -8,7 +8,7 @@ export interface IPet {
     petType: boolean;
     weight: number;
     image: string | "https://images.unsplash.com/photo-1519052537078-e6302a4968d4?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fGNhdHxlbnwwfHwwfHx8MA%3D%3D%3D";
-    userId: string;
+    appUserId: string;
     color: string;
     specialRequirement: string;
 }

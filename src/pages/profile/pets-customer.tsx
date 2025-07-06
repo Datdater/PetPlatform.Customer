@@ -113,7 +113,7 @@ const PetsCustomer: React.FC = () => {
                                 {...pet}
                                 onEdit={handleEdit}
                                 onDelete={handleDelete}
-                                userId={user.id}
+                                appUserId={user.id}
                             />
                         ))}
                     </div>

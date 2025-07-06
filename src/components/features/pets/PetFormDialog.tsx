@@ -21,7 +21,7 @@ const PetFormDialog = ({ isOpen, onClose, pet, onSuccess, userId }: PetFormDialo
         weight: 0,
         color: '',
         specialRequirement: '',
-        userId: '',
+        appUserId: '',
         image: 'https://images.unsplash.com/photo-1519052537078-e6302a4968d4?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fGNhdHxlbnwwfHwwfHx8MA%3D%3D%3D'
     });
     const [isLoading, setIsLoading] = useState(false);
@@ -48,7 +48,7 @@ const PetFormDialog = ({ isOpen, onClose, pet, onSuccess, userId }: PetFormDialo
                 weight: 0,
                 color: '',
                 specialRequirement: '',
-                userId: userId,
+                appUserId: userId,
                 image: 'https://images.unsplash.com/photo-1519052537078-e6302a4968d4?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fGNhdHxlbnwwfHwwfHx8MA%3D%3D%3D'
             });
         }

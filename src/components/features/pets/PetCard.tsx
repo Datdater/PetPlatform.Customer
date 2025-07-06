@@ -42,7 +42,7 @@ const PetCard = ({ id, name, dob, petType, weight, image, color, specialRequirem
                         variant="outline"
                         size="sm"
                         className="flex-1"
-                        onClick={() => onEdit?.({ id, name, dob, petType, weight, image, color, specialRequirement, userId: '' })}
+                        onClick={() => onEdit?.({ id, name, dob, petType, weight, image, color, specialRequirement, appUserId: '' })}
                     >
                         <Edit className="w-4 h-4 mr-2" />
                         Edit
