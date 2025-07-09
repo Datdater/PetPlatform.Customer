@@ -7,6 +7,20 @@ import { Trash2, ShoppingBag, Package } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Checkbox } from "@/components/ui/checkbox";
 
+// Mock shipping fee calculation per store (replace with API call later)
+const calculateShippingFeePerStore = (storeItems: CartItem[]): number => {
+  // Mock logic: Different fees based on store and total weight
+  const totalWeight = storeItems.reduce((weight, item) => weight + (item.quantity * 0.5), 0); // Assuming each item weighs 0.5kg
+  
+  // Base fee per store
+  const baseFee = 30000;
+  
+  // Add weight-based fee
+  const weightFee = Math.ceil(totalWeight) * 3000 * 0; // 3000đ per kg
+  
+  return baseFee + weightFee;
+};
+
 export default function CartPage() {
   const user = useContext(UserContext);
   const navigate = useNavigate();
@@ -137,16 +151,12 @@ export default function CartPage() {
       .reduce((total, item) => total + (item.unitPrice * item.quantity), 0);
   };
 
-  // Mock address data (replace with real data or context if available)
-
   // Helper to group items by store
   const groupItemsByStore = (items: CartItem[]) => {
-    // Mock store data for demonstration; replace with real data if available
     return items.reduce((groups, item) => {
-      // Mock: assign storeId and storeName if not present
-      const storeId = (item as any).storeId || 'store-1';
-      const storeName = (item as any).storeName || 'Cửa hàng ABC';
-      const storeUrl = (item as any).storeUrl || 'https://via.placeholder.com/40x40?text=Shop';
+      const storeId = item.storeId || 'store-1';
+      const storeName = item.storeName || 'Cửa hàng ABC';
+      const storeUrl = item.storeUrl || 'https://via.placeholder.com/40x40?text=Shop';
       if (!groups[storeId]) {
         groups[storeId] = {
           storeName,
@@ -157,6 +167,26 @@ export default function CartPage() {
       groups[storeId].items.push(item);
       return groups;
     }, {} as Record<string, { storeName: string; storeUrl: string; items: CartItem[] }>);
+  };
+
+  // Calculate delivery fees for selected items grouped by store
+  const calculateDeliveryFeesByStore = () => {
+    if (!cart) return {};
+    
+    const selectedItemV1 = cart.items.filter(item => selectedItems.has(item.id)) ;
+    const groupedByStore = groupItemsByStore(selectedItemV1);
+    
+    const deliveryFees: Record<string, number> = {};
+    Object.entries(groupedByStore).forEach(([storeId, group]) => {
+      deliveryFees[storeId] = calculateShippingFeePerStore(group.items);
+    });
+    
+    return deliveryFees;
+  };
+
+  const calculateTotalDeliveryFee = () => {
+    const deliveryFees = calculateDeliveryFeesByStore();
+    return Object.values(deliveryFees).reduce((total, fee) => total + fee, 0);
   };
 
   if (!user) {
@@ -202,87 +232,92 @@ export default function CartPage() {
               </div>
 
               {/* Grouped by store */}
-              {Object.entries(groupItemsByStore(cart.items)).map(([storeId, group]) => (
-                <div key={storeId} className="border-b last:border-b-0">
-                  <div className="flex items-center gap-2 px-4 py-3 bg-gray-50">
-                    <img src={group.storeUrl} alt={group.storeName} className="w-8 h-8 rounded-full border" />
-                    <span className="font-semibold text-base text-gray-700">{group.storeName}</span>
-                  </div>
-                  {group.items.map((item) => (
-                    <div key={item.id} className="flex items-start gap-4 p-4 border-t last:border-b-0">
-                      <Checkbox
-                        id={`item-${item.id}`}
-                        checked={selectedItems.has(item.id)}
-                        onCheckedChange={() => handleSelectItem(item.id)}
-                        className="mt-1"
-                      />
-                      <img 
-                        src={item.pictureUrl} 
-                        alt={item.productName} 
-                        className="w-24 h-24 object-cover rounded-lg"
-                      />
-                      <div className="flex-1">
-                        <h3 className="font-semibold mb-1">{item.productName}</h3>
-                        <div className="text-sm text-gray-500 mb-2">
-                          {parseAttributes(item.attributes)}
-                        </div>
-                        <div className="text-orange-600 font-bold mb-2">
-                          {item.unitPrice.toLocaleString('vi-VN')}₫
-                        </div>
-                        <div className="flex items-center gap-4">
-                          <div className="flex items-center border rounded">
-                            <button
-                              className="px-2 py-1 hover:bg-gray-100"
-                              onClick={() => handleUpdateQuantity(item.id, item.quantity - 1)}
-                              disabled={updating === item.id}
-                            >
-                              -
-                            </button>
-                            <span className="px-2 py-1 min-w-[40px] text-center">
-                              {item.quantity}
-                            </span>
-                            <button
-                              className="px-2 py-1 hover:bg-gray-100"
-                              onClick={() => handleUpdateQuantity(item.id, item.quantity + 1)}
-                              disabled={updating === item.id}
-                            >
-                              +
-                            </button>
+              {Object.entries(groupItemsByStore(cart.items)).map(([storeId, group]) => {
+                const selectedStoreItems = group.items.filter(item => selectedItems.has(item.id));
+                const storeDeliveryFee = calculateShippingFeePerStore(selectedStoreItems);
+                const storeTotal = selectedStoreItems.reduce((total, item) => total + (item.unitPrice * item.quantity), 0);
+                
+                return (
+                  <div key={storeId} className="border-b last:border-b-0">
+                    <div className="flex items-center gap-2 px-4 py-3 bg-gray-50">
+                      <img src={group.storeUrl} alt={group.storeName} className="w-8 h-8 rounded-full border" />
+                      <span className="font-semibold text-base text-gray-700">{group.storeName}</span>
+                    </div>
+                    {group.items.map((item) => (
+                      <div key={item.id} className="flex items-start gap-4 p-4 border-t last:border-b-0">
+                        <Checkbox
+                          id={`item-${item.id}`}
+                          checked={selectedItems.has(item.id)}
+                          onCheckedChange={() => handleSelectItem(item.id)}
+                          className="mt-1"
+                        />
+                        <img 
+                          src={item.pictureUrl} 
+                          alt={item.productName} 
+                          className="w-24 h-24 object-cover rounded-lg"
+                        />
+                        <div className="flex-1">
+                          <h3 className="font-semibold mb-1">{item.productName}</h3>
+                          <div className="text-sm text-gray-500 mb-2">
+                            {parseAttributes(item.attributes)}
                           </div>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            className="text-red-500 hover:text-red-600 hover:bg-red-50"
-                            onClick={() => handleRemoveItem(item.id)}
-                          >
-                            <Trash2 className="w-4 h-4 mr-1" />
-                            Xóa
-                          </Button>
+                          <div className="text-orange-600 font-bold mb-2">
+                            {item.unitPrice.toLocaleString('vi-VN')}₫
+                          </div>
+                          <div className="flex items-center gap-4">
+                            <div className="flex items-center border rounded">
+                              <button
+                                className="px-2 py-1 hover:bg-gray-100"
+                                onClick={() => handleUpdateQuantity(item.id, item.quantity - 1)}
+                                disabled={updating === item.id}
+                              >
+                                -
+                              </button>
+                              <span className="px-2 py-1 min-w-[40px] text-center">
+                                {item.quantity}
+                              </span>
+                              <button
+                                className="px-2 py-1 hover:bg-gray-100"
+                                onClick={() => handleUpdateQuantity(item.id, item.quantity + 1)}
+                                disabled={updating === item.id}
+                              >
+                                +
+                              </button>
+                            </div>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="text-red-500 hover:text-red-600 hover:bg-red-50"
+                              onClick={() => handleRemoveItem(item.id)}
+                            >
+                              <Trash2 className="w-4 h-4 mr-1" />
+                              Xóa
+                            </Button>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
-                </div>
-              ))}
+                    ))}
+                    {/* Store delivery fee summary */}
+                    {selectedStoreItems.length > 0 && (
+                      <div className="px-4 py-3 bg-blue-50 border-t">
+                        <div className="flex justify-between items-center text-sm">
+                          <span className="text-gray-600">Phí vận chuyển {group.storeName}:</span>
+                          <span className="font-semibold text-blue-600">{storeDeliveryFee.toLocaleString('vi-VN')}₫</span>
+                        </div>
+                        <div className="flex justify-between items-center text-sm mt-1">
+                          <span className="text-gray-600">Tổng {group.storeName}:</span>
+                          <span className="font-semibold text-orange-600">{(storeTotal + storeDeliveryFee).toLocaleString('vi-VN')}₫</span>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
             </div>
           </div>
 
           {/* Order Summary */}
           <div className="lg:col-span-1">
-            {/* Delivery Address Card */}
-            {/* <div className="bg-[#f7f8fa] rounded-lg p-4 mb-4">
-              <div className="flex justify-between items-center mb-1">
-                <span className="text-gray-600 font-medium">Giao tới</span>
-                <button className="text-blue-500 text-sm font-medium hover:underline">Thay đổi</button>
-              </div>
-              <div className="font-semibold text-base mb-1">
-                {address.name} <span className="font-normal text-gray-500">|</span> <span className="font-semibold">{address.phone}</span>
-              </div>
-              <div className="flex items-center gap-2 mb-1">
-                <span className="bg-green-100 text-green-600 text-xs px-2 py-0.5 rounded-full font-medium">{address.type}</span>
-                <span className="text-gray-600 text-sm">{address.address}</span>
-              </div>
-            </div> */}
             <div className="bg-white rounded-lg shadow-sm p-6 sticky top-4">
               <h2 className="text-lg font-semibold mb-4">Tổng đơn hàng</h2>
               <div className="space-y-2 mb-4">
@@ -290,14 +325,14 @@ export default function CartPage() {
                   <span>Tạm tính ({selectedItems.size} sản phẩm)</span>
                   <span>{calculateSelectedTotal().toLocaleString('vi-VN')}₫</span>
                 </div>
-                {/* <div className="flex justify-between text-gray-600">
+                <div className="flex justify-between text-gray-600">
                   <span>Phí vận chuyển</span>
-                  <span>Miễn phí</span>
-                </div> */}
+                  <span>{calculateTotalDeliveryFee().toLocaleString('vi-VN')}₫</span>
+                </div>
                 <div className="border-t pt-2 mt-2">
                   <div className="flex justify-between font-semibold">
                     <span>Tổng cộng</span>
-                    <span className="text-orange-600">{calculateSelectedTotal().toLocaleString('vi-VN')}₫</span>
+                    <span className="text-orange-600">{(calculateSelectedTotal() + calculateTotalDeliveryFee()).toLocaleString('vi-VN')}₫</span>
                   </div>
                 </div>
               </div>

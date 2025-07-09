@@ -14,35 +14,52 @@ import {
 } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import { useNavigate, useLocation } from "react-router-dom";
-import { ShoppingBag, CreditCard, Banknote, Truck } from "lucide-react";
+import { ShoppingBag, CreditCard, Banknote, Store } from "lucide-react";
 import { addressService, type Address } from "@/services/address.service";
 import { cartService, type Cart, type CartItem } from "@/services/cart.service";
 import { orderService } from "@/services/order.service";
 
-// Mock shipping fee calculation (replace with API call later)
-const calculateShippingFee = (address: Address | null, items: CartItem[]): number => {
+// Mock shipping fee calculation per store (replace with API call later)
+const calculateShippingFeePerStore = (address: Address | null, storeItems: CartItem[]): number => {
   if (!address) return 0;
   
-  // Mock logic: Different fees based on city
+  // Mock logic: Different fees based on city and store
   const cityShippingFees: { [key: string]: number } = {
-    "Hồ Chí Minh": 15000,
-    "Hà Nội": 20000,
-    "Đà Nẵng": 25000,
+    "Hồ Chí Minh": 30000,
+    "Hà Nội": 30000,
+    "Đà Nẵng": 30000,
   };
 
   // Default fee for other cities
   const defaultFee = 30000;
 
   // Calculate based on total weight (mock weight calculation)
-  const totalWeight = items.reduce((weight, item) => weight + (item.quantity * 0.5), 0); // Assuming each item weighs 0.5kg
+  const totalWeight = storeItems.reduce((weight, item) => weight + (item.quantity * 0.5), 0); // Assuming each item weighs 0.5kg
 
   // Base fee from city
   const baseFee = cityShippingFees[address.city] || defaultFee;
 
   // Add weight-based fee
-  const weightFee = Math.ceil(totalWeight) * 5000; // 5000đ per kg
+  const weightFee = Math.ceil(totalWeight) * 5000*0; // 5000đ per kg
 
   return baseFee + weightFee;
+};
+
+// Helper to group items by store
+const groupItemsByStore = (items: CartItem[]) => {
+  return items.reduce((groups, item) => {
+    const storeId = item.storeId || 'store-1';
+    const storeName = item.storeName || 'Cửa hàng ABC';
+    if (!groups[storeId]) {
+      groups[storeId] = {
+        storeId,
+        storeName,
+        items: []
+      };
+    }
+    groups[storeId].items.push(item);
+    return groups;
+  }, {} as Record<string, { storeId: string; storeName: string; items: CartItem[] }>);
 };
 
 export default function Checkout() {
@@ -55,7 +72,6 @@ export default function Checkout() {
   const [selectedAddress, setSelectedAddress] = useState<Address | null>(null);
   const [paymentMethod, setPaymentMethod] = useState<string>("credit_card");
   const [selectedItems, setSelectedItems] = useState<Set<string>>(new Set());
-  const [shippingFee, setShippingFee] = useState(0);
   const [isAddressDialogOpen, setIsAddressDialogOpen] = useState(false);
   const [note, setNote] = useState("");
 
@@ -74,14 +90,19 @@ export default function Checkout() {
     }
   }, [location.state]);
 
+  // Auto-switch to COD if multiple stores and online payment is selected
   useEffect(() => {
-    // Recalculate shipping fee when address or selected items change
-    if (cart && selectedAddress) {
-      const selectedCartItems = cart.items.filter(item => selectedItems.has(item.id));
-      const fee = calculateShippingFee(selectedAddress, selectedCartItems);
-      setShippingFee(fee);
+    if (!cart) return;
+    
+    const selectedCartItems = cart.items.filter(item => selectedItems.has(item.id));
+    const groupedByStore = groupItemsByStore(selectedCartItems);
+    const hasMultipleStores = Object.keys(groupedByStore).length > 1;
+    
+    if (hasMultipleStores && paymentMethod === "credit_card") {
+      setPaymentMethod("cod");
+      toast.info("Thanh toán online không khả dụng cho đơn hàng từ nhiều cửa hàng. Đã chuyển sang thanh toán khi nhận hàng.");
     }
-  }, [selectedAddress, cart, selectedItems]);
+  }, [cart, selectedItems, paymentMethod]);
 
   const fetchCart = async () => {
     if (!user) return;
@@ -119,10 +140,24 @@ export default function Checkout() {
     try {
       setLoading(true);
       
-      // Prepare order details from selected items
-      const orderDetails = cart.items
-        .filter(item => selectedItems.has(item.id))
-        .map(item => ({
+      // Get selected items and group them by store
+      const selectedCartItems = cart.items.filter(item => selectedItems.has(item.id));
+      const groupedByStore = groupItemsByStore(selectedCartItems);
+      
+      // Map payment method to enum value
+      const paymentMethodMap = {
+        "credit_card": 1,
+        "cod": 0
+      };
+
+      const paymentMethodValue = paymentMethodMap[paymentMethod as keyof typeof paymentMethodMap];
+      
+      // Create orders for each store
+      const orderPromises = Object.entries(groupedByStore).map(async ([, storeGroup]) => {
+        const storeDeliveryFee = calculateShippingFeePerStore(selectedAddress, storeGroup.items);
+        
+        // Prepare order details for this store
+        const orderDetails = storeGroup.items.map(item => ({
           quantity: item.quantity,
           price: item.unitPrice,
           productVariationId: item.productVariantId,
@@ -132,54 +167,43 @@ export default function Checkout() {
           attribute: item.attributes || {}
         }));
 
-      // Map payment method to enum value
-      const paymentMethodMap = {
-        "credit_card": 1,
-        "cod": 0
-      };
+        const orderData = {
+          storeId: storeGroup.storeId,
+          customerId: user.id,
+          addressId: selectedAddress.id,
+          addressStoreId: selectedAddress.id,
+          paymentMethod: paymentMethodValue,
+          promotionId: "", // TODO: Add promotion handling
+          deliveryPrice: storeDeliveryFee,
+          note: note,
+          orderDetails: orderDetails
+        };
 
-      const paymentMethodValue = paymentMethodMap[paymentMethod as keyof typeof paymentMethodMap];
+        return await orderService.createOrder(orderData);
+      });
 
-      const orderData = {
-        storeId: cart.items[0]?.storeId || "", // Assuming all items are from the same store
-        customerId: user.id,
-        addressId: selectedAddress.id,
-        addressStoreId: selectedAddress.id,
-        paymentMethod: paymentMethodValue,
-        promotionId: "", // TODO: Add promotion handling
-        deliveryPrice: shippingFee,
-        note: note,
-        orderDetails: orderDetails
-      };
-
-      console.log(paymentMethodValue); 
-      // Create order
-      const orderResponse = await orderService.createOrder(orderData);
+      // Wait for all orders to be created
+      const orderResponses = await Promise.all(orderPromises);
 
       // Remove purchased items from cart
-      const purchasedItemIds = cart.items
-        .filter(item => selectedItems.has(item.id))
-        .map(item => item.id);
+      const purchasedItemIds = selectedCartItems.map(item => item.id);
       for (const itemId of purchasedItemIds) {
         await cartService.removeItem(itemId);
       }
 
-      // If payment method is not COD, create payment
-      if (paymentMethodValue !== 0) { // 2 is COD
-        // const paymentData = {
-        //   orderId: orderResponse.orderId,
-        //   customerId: user.id,
-        //   amount: orderResponse.price,
-        //   paymentMethod: paymentMethodValue
-        // };
-
-        // const paymentResponse = await paymentService.createPayment(paymentData);
-        
-        // Redirect to payment URL
-        window.location.href = orderResponse.paymentUrl;
+      // Handle payment based on payment method
+      if (paymentMethodValue !== 0) { // Not COD
+        // For online payment, redirect to the first order's payment URL
+        // In a real implementation, you might want to handle multiple payment URLs
+        if (orderResponses.length > 0 && orderResponses[0].paymentUrl) {
+          window.location.href = orderResponses[0].paymentUrl;
+        } else {
+          toast.success("Đặt hàng thành công!");
+          navigate("/user/orders");
+        }
       } else {
-        // For COD, just show success message and redirect to orders page
-        toast.success("Đặt hàng thành công!");
+        // For COD, show success message and redirect to orders page
+        toast.success(`Đặt hàng thành công! ${orderResponses.length} đơn hàng đã được tạo.`);
         navigate("/user/orders");
       }
     } catch (error) {
@@ -197,8 +221,27 @@ export default function Checkout() {
       .reduce((total, item) => total + (item.unitPrice * item.quantity), 0);
   };
 
+  const calculateDeliveryFeesByStore = () => {
+    if (!cart || !selectedAddress) return {};
+    
+    const selectedCartItems = cart.items.filter(item => selectedItems.has(item.id));
+    const groupedByStore = groupItemsByStore(selectedCartItems);
+    
+    const deliveryFees: Record<string, number> = {};
+    Object.entries(groupedByStore).forEach(([storeId, storeGroup]) => {
+      deliveryFees[storeId] = calculateShippingFeePerStore(selectedAddress, storeGroup.items);
+    });
+    
+    return deliveryFees;
+  };
+
+  const calculateTotalDeliveryFee = () => {
+    const deliveryFees = calculateDeliveryFeesByStore();
+    return Object.values(deliveryFees).reduce((total, fee) => total + fee, 0);
+  };
+
   const calculateFinalTotal = () => {
-    return calculateSelectedTotal() + shippingFee;
+    return calculateSelectedTotal() + calculateTotalDeliveryFee();
   };
 
   if (!user) {
@@ -232,6 +275,9 @@ export default function Checkout() {
   }
 
   const selectedCartItems = cart.items.filter(item => selectedItems.has(item.id));
+  const groupedByStore = groupItemsByStore(selectedCartItems);
+  const deliveryFeesByStore = calculateDeliveryFeesByStore();
+  const hasMultipleStores = Object.keys(groupedByStore).length > 1;
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -341,19 +387,21 @@ export default function Checkout() {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                <div className="flex items-center justify-between p-4 border rounded-lg">
-                  <div className="flex items-center gap-3">
-                    <Truck className="w-5 h-5 text-gray-500" />
-                    <div>
-                      <p className="font-medium">Giao hàng tiêu chuẩn</p>
-                      <p className="text-sm text-gray-500">Dự kiến giao trong 2-3 ngày</p>
+                {Object.entries(groupedByStore).map(([storeId, storeGroup]) => (
+                  <div key={storeId} className="flex items-center justify-between p-4 border rounded-lg">
+                    <div className="flex items-center gap-3">
+                      <Store className="w-5 h-5 text-gray-500" />
+                      <div>
+                        <p className="font-medium">Giao hàng tiêu chuẩn - {storeGroup.storeName}</p>
+                        <p className="text-sm text-gray-500">Dự kiến giao trong 2-3 ngày</p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <p className="font-medium">{deliveryFeesByStore[storeId]?.toLocaleString('vi-VN')}₫</p>
+                      <p className="text-sm text-gray-500">Tính theo địa chỉ giao hàng</p>
                     </div>
                   </div>
-                  <div className="text-right">
-                    <p className="font-medium">{shippingFee.toLocaleString('vi-VN')}₫</p>
-                    <p className="text-sm text-gray-500">Tính theo địa chỉ giao hàng</p>
-                  </div>
-                </div>
+                ))}
               </div>
             </CardContent>
           </Card>
@@ -369,20 +417,25 @@ export default function Checkout() {
                 onValueChange={setPaymentMethod}
                 className="space-y-4"
               >
-                <div className="flex items-center space-x-2 border rounded-lg p-4">
-                  <RadioGroupItem value="credit_card" id="credit_card" />
-                  <Label htmlFor="credit_card" className="flex items-center gap-2 cursor-pointer">
+                <div className={`flex items-center space-x-2 border rounded-lg p-4 ${hasMultipleStores ? 'opacity-50 cursor-not-allowed' : ''}`}>
+                  <RadioGroupItem 
+                    value="credit_card" 
+                    id="credit_card" 
+                    disabled={hasMultipleStores}
+                  />
+                  <Label 
+                    htmlFor="credit_card" 
+                    className={`flex items-center gap-2 ${hasMultipleStores ? 'cursor-not-allowed' : 'cursor-pointer'}`}
+                  >
                     <CreditCard className="w-5 h-5" />
                     Thanh toán online
+                    {hasMultipleStores && (
+                      <span className="text-xs text-red-500 ml-2">
+                        (Không khả dụng cho đơn hàng từ nhiều cửa hàng)
+                      </span>
+                    )}
                   </Label>
                 </div>
-                {/* <div className="flex items-center space-x-2 border rounded-lg p-4">
-                  <RadioGroupItem value="momo" id="momo" />
-                  <Label htmlFor="momo" className="flex items-center gap-2 cursor-pointer">
-                    <Wallet className="w-5 h-5" />
-                    Ví MoMo
-                  </Label>
-                </div> */}
                 <div className="flex items-center space-x-2 border rounded-lg p-4">
                   <RadioGroupItem value="cod" id="cod" />
                   <Label htmlFor="cod" className="flex items-center gap-2 cursor-pointer">
@@ -414,18 +467,37 @@ export default function Checkout() {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                <div className="space-y-2">
-                  {selectedCartItems.map((item) => (
-                    <div key={item.id} className="flex justify-between text-sm">
-                      <span className="text-gray-600">
-                        {item.productName} x {item.quantity}
-                      </span>
-                      <span className="font-medium">
-                        {(item.unitPrice * item.quantity).toLocaleString("vi-VN")}₫
+                {/* Items grouped by store */}
+                {Object.entries(groupedByStore).map(([storeId, storeGroup]) => (
+                  <div key={storeId} className="border-b pb-4 last:border-b-0">
+                    <div className="flex items-center gap-2 mb-3">
+                      <Store className="w-4 h-4 text-gray-500" />
+                      <span className="font-medium text-sm text-gray-700">{storeGroup.storeName}</span>
+                    </div>
+                    <div className="space-y-2 mb-3">
+                      {storeGroup.items.map((item) => (
+                        <div key={item.id} className="flex justify-between text-sm">
+                          <span className="text-gray-600">
+                            {item.productName} x {item.quantity}
+                          </span>
+                          <span className="font-medium">
+                            {(item.unitPrice * item.quantity).toLocaleString("vi-VN")}₫
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="flex justify-between text-sm text-gray-600 mb-2">
+                      <span>Phí vận chuyển {storeGroup.storeName}</span>
+                      <span>{deliveryFeesByStore[storeId]?.toLocaleString("vi-VN")}₫</span>
+                    </div>
+                    <div className="flex justify-between text-sm font-semibold">
+                      <span>Tổng {storeGroup.storeName}</span>
+                      <span className="text-orange-600">
+                        {(storeGroup.items.reduce((total, item) => total + (item.unitPrice * item.quantity), 0) + (deliveryFeesByStore[storeId] || 0)).toLocaleString("vi-VN")}₫
                       </span>
                     </div>
-                  ))}
-                </div>
+                  </div>
+                ))}
                 
                 <div className="border-t pt-4 space-y-2">
                   <div className="flex justify-between text-sm">
@@ -436,7 +508,7 @@ export default function Checkout() {
                   </div>
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-600">Phí vận chuyển</span>
-                    <span>{shippingFee.toLocaleString("vi-VN")}₫</span>
+                    <span>{calculateTotalDeliveryFee().toLocaleString("vi-VN")}₫</span>
                   </div>
                   <div className="border-t pt-2">
                     <div className="flex justify-between font-semibold">
@@ -454,7 +526,7 @@ export default function Checkout() {
                   onClick={handlePlaceOrder}
                   disabled={!selectedAddress || loading}
                 >
-                  {loading ? "Đang xử lý..." : "Đặt hàng"}
+                  {loading ? "Đang xử lý..." : `Đặt hàng (${Object.keys(groupedByStore).length} cửa hàng)`}
                 </Button>
               </div>
             </CardContent>

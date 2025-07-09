@@ -166,7 +166,7 @@ export default function ProductCard({
         </div>
 
         {/* Shop info */}
-        <Link to={`/store/${shopName.replace(/\s+/g, "-").toLowerCase()}`} className="flex items-center gap-1 mb-2 justify-center">
+        <Link to={`/store/${storeId}`} className="flex items-center gap-1 mb-2 justify-center">
           <span className="text-xs text-gray-600 hover:text-blue-600 transition-colors">
             {shopName}
           </span>

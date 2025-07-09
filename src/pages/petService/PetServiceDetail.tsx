@@ -7,6 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import BookingDialog from '@/components/features/petServices/BookingDialog';
 import { IPetServiceCard } from '@/types/petServices/IPetServiceCard';
 import { getPetServiceDetail } from '@/services/petService.service';
+import { Store, storeService } from '@/services/store.service';
 
 
 
@@ -16,11 +17,15 @@ const PetServiceDetail = () => {
     const [selectedImage, setSelectedImage] = useState(0);
     const [isFavorite, setIsFavorite] = useState(false);
     const [isBookingDialogOpen, setIsBookingDialogOpen] = useState(false);
+    const [store, setStore] = useState<Store | null>(null);
 
     useEffect(() => {
         if (id) {
             getPetServiceDetail(id).then((data) => {
                 setPetService(data);
+                storeService.getStore(data.storeId).then((store) => {
+                    setStore(store);
+                });
             });
         }
     }, [id]);
@@ -237,15 +242,15 @@ const PetServiceDetail = () => {
                                     </div>
                                     <div className="flex items-center gap-2">
                                         <Phone className="w-5 h-5 text-gray-500" />
-                                        <span className="text-gray-600">0909090909</span>
+                                        <span className="text-gray-600">{store?.hotline}</span>
                                     </div>
                                     <div className="flex items-center gap-2">
                                         <Mail className="w-5 h-5 text-gray-500" />
-                                        <span className="text-gray-600">example@example.com</span>
+                                        <span className="text-gray-600">{store?.faxEmail}</span>
                                     </div>
                                     <div className="flex items-center gap-2">
                                         <Calendar className="w-5 h-5 text-gray-500" />
-                                        <span className="text-gray-600">8:00 - 18:00</span>
+                                        <span className="text-gray-600">{store?.businessType}</span>
                                     </div>
                                 </div>
                             </div>

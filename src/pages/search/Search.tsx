@@ -2,11 +2,15 @@
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import ProductCard from '@/components/features/products/productCard';
+import PetServiceCard from '@/components/features/petServices/PetServiceCard';
 import { getProducts } from '@/services/product.service';
+import { getPetServices } from '@/services/petService.service';
 import { IProduct } from '@/types/IProduct';
+import { IPetServiceCard } from '@/types/petServices/IPetServiceCard';
 import { Button } from '@/components/ui/button';
 import { categoryService, ICategory } from '@/services/category.service';
 import { locationService, IProvince } from '@/services/location.service';
+
 // Helper to get query params from URL
 function useQueryParams() {
   const { search } = useLocation();
@@ -16,6 +20,9 @@ function useQueryParams() {
 export default function Search() {
   const query = useQueryParams();
   const navigate = useNavigate();
+
+  // Active tab state
+  const [activeTab, setActiveTab] = useState<'products' | 'services'>('products');
 
   // Filters from URL
   const [searchTerm] = useState(query.get('searchTerm') || '');
@@ -29,9 +36,15 @@ export default function Search() {
   const [pageIndex, setPageIndex] = useState(Number(query.get('pageIndex')) || 1);
   const [pageSize] = useState(Number(query.get('pageSize')) || 12);
 
-  // Data state
+  // Data state for products
   const [products, setProducts] = useState<IProduct[]>([]);
-  const [total, setTotal] = useState(0);
+  const [productsTotal, setProductsTotal] = useState(0);
+  
+  // Data state for services
+  const [services, setServices] = useState<IPetServiceCard[]>([]);
+  const [servicesTotal, setServicesTotal] = useState(0);
+  
+  // Loading and error states
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -81,26 +94,47 @@ export default function Search() {
 
   // Fetch products when filters change
   useEffect(() => {
-    setLoading(true);
-    setError(null);
-    getProducts(pageIndex, pageSize, {
-      searchTerm,
-      categoryId,
-      minPrice: minPrice ? Number(minPrice) : undefined,
-      maxPrice: maxPrice ? Number(maxPrice) : undefined,
-      minRating: minRating ? Number(minRating) : undefined,
-      inStock: inStock ? inStock === 'true' : undefined,
-      sortBy: sortBy as any,
-      sortDescending: sortDescending ? sortDescending === 'true' : undefined,
-    })
-      .then((res) => {
-        setProducts(res.items || []);
-        setTotal(res.totalCount || 0);
+    if (activeTab === 'products') {
+      setLoading(true);
+      setError(null);
+      getProducts(pageIndex, pageSize, {
+        searchTerm,
+        categoryId,
+        minPrice: minPrice ? Number(minPrice) : undefined,
+        maxPrice: maxPrice ? Number(maxPrice) : undefined,
+        minRating: minRating ? Number(minRating) : undefined,
+        inStock: inStock ? inStock === 'true' : undefined,
+        sortBy: sortBy as any,
+        sortDescending: sortDescending ? sortDescending === 'true' : undefined,
       })
-      .catch(() => setError('Failed to load products'))
-      .finally(() => setLoading(false));
+        .then((res) => {
+          setProducts(res.items || []);
+          setProductsTotal(res.totalCount || 0);
+        })
+        .catch(() => setError('Failed to load products'))
+        .finally(() => setLoading(false));
+    }
     // eslint-disable-next-line
-  }, [searchTerm, categoryId, minPrice, maxPrice, minRating, inStock, sortBy, sortDescending, pageIndex, pageSize]);
+  }, [activeTab, searchTerm, categoryId, minPrice, maxPrice, minRating, inStock, sortBy, sortDescending, pageIndex, pageSize]);
+
+  // Fetch services when filters change
+  useEffect(() => {
+    if (activeTab === 'services') {
+      setLoading(true);
+      setError(null);
+      getPetServices(pageIndex, pageSize, {
+        searchTerm,
+        categoryId,
+      })
+        .then((res) => {
+          setServices(res.items || []);
+          setServicesTotal(res.totalCount || 0);
+        })
+        .catch(() => setError('Failed to load services'))
+        .finally(() => setLoading(false));
+    }
+    // eslint-disable-next-line
+  }, [activeTab, searchTerm, categoryId, pageIndex, pageSize]);
 
   // Handlers for filters
 
@@ -111,11 +145,19 @@ export default function Search() {
 
   // Handler for Apply button (implement actual filter logic as needed)
   const handleApplyFilters = () => {
-
     // You can update your product query here based on selected filters
     setCategoryId(selectedCategories.join(','));
     setPageIndex(1);
   };
+
+  // Handler for tab change
+  const handleTabChange = (tab: 'products' | 'services') => {
+    setActiveTab(tab);
+    setPageIndex(1);
+  };
+
+  const currentTotal = activeTab === 'products' ? productsTotal : servicesTotal;
+  const currentItems = activeTab === 'products' ? products : services;
 
   return (
     <div className="container mx-auto py-8 px-4">
@@ -140,9 +182,36 @@ export default function Search() {
           </div>
         </div>
 
+        {/* Tabs */}
+        <div className="flex justify-center border-b border-gray-200 mb-6">
+          <div className="flex">
+            <button
+              onClick={() => handleTabChange('products')}
+              className={`px-6 py-3 font-medium text-sm border-b-2 transition-colors ${
+                activeTab === 'products'
+                  ? 'border-blue-500 text-blue-600'
+                  : 'border-transparent text-gray-500 hover:text-gray-700'
+              }`}
+            >
+              Sản phẩm ({productsTotal})
+            </button>
+            <button
+              onClick={() => handleTabChange('services')}
+              className={`px-6 py-3 font-medium text-sm border-b-2 transition-colors ${
+                activeTab === 'services'
+                  ? 'border-blue-500 text-blue-600'
+                  : 'border-transparent text-gray-500 hover:text-gray-700'
+              }`}
+            >
+              Dịch vụ ({servicesTotal})
+            </button>
+          </div>
+        </div>
+
         {/* Main Content with Sidebar */}
-        <div className="flex flex-col lg:flex-row gap-8">
-        <aside className="w-full lg:w-72 flex-shrink-0">
+        <div className="flex justify-center">
+          <div className="flex flex-col lg:flex-row gap-8 max-w-7xl w-full">
+            <aside className="w-full lg:w-72 flex-shrink-0">
             <div className="bg-white rounded-lg shadow-sm p-6 border border-gray-100 sticky top-8">
               <div className="mb-4 flex items-center gap-2 text-gray-700 font-semibold text-base">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5"><path strokeLinecap="round" strokeLinejoin="round" d="M3 4.5h18m-16.5 6h15m-13.5 6h12" /></svg>
@@ -247,7 +316,7 @@ export default function Search() {
               </div>
             </div>
           </aside>
-          {/* Product Grid */}
+          {/* Product/Service Grid */}
           <div className="flex-1">
             {loading ? (
               <div className="flex justify-center items-center min-h-[400px]">
@@ -257,26 +326,36 @@ export default function Search() {
               <div className="bg-white rounded-lg shadow-sm p-8 text-center">
                 <div className="text-red-500 text-lg">{error}</div>
               </div>
-            ) : products.length === 0 ? (
+            ) : currentItems.length === 0 ? (
               <div className="bg-white rounded-lg shadow-sm p-8 text-center">
-                <div className="text-gray-500 text-lg">No products found matching your criteria.</div>
+                <div className="text-gray-500 text-lg">No {activeTab === 'products' ? 'products' : 'services'} found matching your criteria.</div>
               </div>
             ) : (
               <>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                  {products.map(product => (
-                    <ProductCard
-                      key={product.id}
-                      id={product.id}
-                      title={product.name}
-                      imageUrl={product.productImage}
-                      price={product.price}
-                      rating={product.starAverage}
-                      reviewCount={product.reviewCount}
-                      shopName={product.storeName}
-                      numberSold={product.sold}
-                    />
-                  ))}
+                  {activeTab === 'products' ? (
+                    products.map(product => (
+                      <ProductCard
+                        key={product.id}
+                        id={product.id}
+                        title={product.name}
+                        imageUrl={product.productImage}
+                        price={product.price}
+                        rating={product.starAverage}
+                        reviewCount={product.reviewCount}
+                        shopName={product.storeName}
+                        numberSold={product.sold}
+                        storeId={product.storeId}
+                      />
+                    ))
+                  ) : (
+                    services.map(service => (
+                      <PetServiceCard
+                        key={service.id}
+                        {...service}
+                      />
+                    ))
+                  )}
                 </div>
                 {/* Pagination */}
                 <div className="flex justify-center items-center gap-4 mt-8">
@@ -289,11 +368,11 @@ export default function Search() {
                     Previous
                   </Button>
                   <span className="text-gray-600">
-                    Page {pageIndex} of {Math.ceil(total / pageSize) || 1}
+                    Page {pageIndex} of {Math.ceil(currentTotal / pageSize) || 1}
                   </span>
                   <Button 
                     variant="outline"
-                    disabled={pageIndex >= Math.ceil(total / pageSize)} 
+                    disabled={pageIndex >= Math.ceil(currentTotal / pageSize)} 
                     onClick={() => setPageIndex(pageIndex + 1)}
                     className="px-6"
                   >
@@ -306,6 +385,7 @@ export default function Search() {
 
           {/* Sidebar Filters */}
           
+          </div>
         </div>
       </div>
     </div>

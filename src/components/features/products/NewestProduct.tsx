@@ -60,6 +60,7 @@ const NewestProducts: React.FC = () => {
                         freeShipping={true}
                         isNew={true}
                         isBestseller={false}
+                        storeId={product.storeId}
                     />
                 ))}
         </>

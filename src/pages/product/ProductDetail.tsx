@@ -2,7 +2,7 @@ import ProductReviews from '@/components/features/products/ProductReviews';
 import { getProductById, getProductReviews, getProductVariants } from '@/services/product.service';
 import { IProductDetail, IProductReview, IProductVariant } from '@/types/IProduct';
 import { useEffect, useState, useContext, useMemo } from 'react';
-import { useParams } from 'react-router';
+import { Link, useParams } from 'react-router';
 import { UserContext } from "@/store/contexts/UserContext";
 import { cartService, Cart } from "@/services/cart.service";
 import { toast } from "sonner";
@@ -266,7 +266,9 @@ export default function ProductDetail() {
                     <div className="flex items-center gap-3 mb-2">
                         <img src={product.storeUrl} alt={product.storeName} className="w-10 h-10 rounded-full border" />
                         <div>
-                            <div className="font-semibold text-base">{product.storeName}</div>
+                            <div className="font-semibold text-base">
+                                <Link to={`/store/${product.storeId}`}>{product.storeName}</Link>
+                            </div>
                             <div className="text-xs text-gray-500">{product.storeProvince}</div>
                         </div>
                     </div>
