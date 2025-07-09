@@ -144,7 +144,7 @@ export default function ProductDetail() {
 
                 if (existingItem) {
                     // Update quantity if item exists
-                    await cartService.updateItem(user!.id, existingItem.id, {
+                    await cartService.updateItem({
                         userId: user!.id,
                         id: existingItem.id,
                         quantity: existingItem.quantity + quantity

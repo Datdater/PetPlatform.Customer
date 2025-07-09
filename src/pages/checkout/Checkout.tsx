@@ -161,7 +161,7 @@ export default function Checkout() {
         .filter(item => selectedItems.has(item.id))
         .map(item => item.id);
       for (const itemId of purchasedItemIds) {
-        await cartService.removeItem(user.id, itemId);
+        await cartService.removeItem(itemId);
       }
 
       // If payment method is not COD, create payment

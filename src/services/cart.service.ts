@@ -44,18 +44,18 @@ export const cartService = {
     const res = await client.get(`/Cart`);
     return res.data as Cart;
   },
-  clearCart: async (userId: string) => {
-    await client.delete(`/Cart/${userId}`);
+  clearCart: async () => {
+    await client.delete(`/Cart`);
   },
-  removeItem: async (userId: string, itemId: string) => {
-    await client.delete(`/Cart/${userId}/items/${itemId}`);
+  removeItem: async (itemId: string) => {
+    await client.delete(`/Cart/items/${itemId}`);
   },
   addItem: async (data: AddCartItemDto) => {
     const res = await client.post("/Cart/items", data);
     return res.data;
   },
-  updateItem: async (userId: string, itemId: string, data: UpdateCartItemDto) => {
-    const res = await client.post(`/Cart/${userId}/items/${itemId}`, data);
+  updateItem: async (data: UpdateCartItemDto) => {
+    const res = await client.post(`/Cart`, data);
     return res.data;
   },
 };

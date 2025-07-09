@@ -45,7 +45,7 @@ export default function CartPage() {
   const handleRemoveItem = async (itemId: string) => {
     if (!user) return;
     try {
-      await cartService.removeItem(user.id, itemId);
+      await cartService.removeItem(itemId);
       toast.success("Đã xóa sản phẩm khỏi giỏ hàng");
       fetchCart();
     } catch {
@@ -56,7 +56,7 @@ export default function CartPage() {
   const handleClearCart = async () => {
     if (!user) return;
     try {
-      await cartService.clearCart(user.id);
+      await cartService.clearCart();
       toast.success("Đã xóa toàn bộ giỏ hàng");
       fetchCart();
     } catch {
@@ -71,7 +71,7 @@ export default function CartPage() {
     try {
       const item = cart.items.find(i => i.id === itemId);
       if (!item) return;
-      await cartService.updateItem(user.id, itemId, {
+      await cartService.updateItem({
         userId: user.id,
         id: itemId,
         quantity: newQuantity,
