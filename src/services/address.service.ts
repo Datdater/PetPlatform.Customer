@@ -15,6 +15,11 @@ export interface Address {
   createdAt: string;
   updatedAt: string | null;
 }
+export interface GetAllAddress {
+  addresses: Address[];
+  total: number;
+}
+
 
 export interface CreateAddressDto {
   street: string;
@@ -27,8 +32,8 @@ export interface CreateAddressDto {
 }
 
 export const addressService = {
-  getAll: async (): Promise<Address[]> => {
-    const response = await client.get<Address[]>(`/customers/address`);
+  getAll: async (): Promise<GetAllAddress> => {
+    const response = await client.get<GetAllAddress>(`/customers/address`);
     return response.data;
   },
 

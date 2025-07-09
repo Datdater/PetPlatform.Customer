@@ -100,13 +100,13 @@ export default function Checkout() {
     if (!user) return;
     try {
       const data = await addressService.getAll();
-      setAddresses(data);
+      setAddresses(data.addresses);
       // Set default address if available
-      const defaultAddress = data.find(addr => addr.isDefault);
+      const defaultAddress = data.addresses.find(addr => addr.isDefault);
       if (defaultAddress) {
         setSelectedAddress(defaultAddress);
-      } else if (data.length > 0) {
-        setSelectedAddress(data[0]);
+      } else if (data.addresses.length > 0) {
+        setSelectedAddress(data.addresses[0]);
       }
     } catch {
       toast.error("Không thể tải địa chỉ");

@@ -80,7 +80,7 @@ const AddressCustomer = () => {
     setLoading(true);
     try {
       const data = await addressService.getAll();
-      setAddresses(data);
+      setAddresses(data.addresses);
     } catch (error) {
       toast.error("Failed to fetch addresses");
     } finally {
