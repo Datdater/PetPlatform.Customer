@@ -19,7 +19,7 @@ export const useCartInit = () => {
             }
 
             try {
-                const cart = await cartService.getCart(user.id);
+                const cart = await cartService.getCart();
                 dispatch(setCartCount(cart.items.length));
             } catch (error) {
                 console.error('Failed to load cart:', error);

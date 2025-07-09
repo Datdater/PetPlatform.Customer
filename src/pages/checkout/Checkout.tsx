@@ -87,7 +87,7 @@ export default function Checkout() {
     if (!user) return;
     setLoading(true);
     try {
-      const data = await cartService.getCart(user.id);
+      const data = await cartService.getCart();
       setCart(data);
     } catch {
       toast.error("Không thể tải giỏ hàng");

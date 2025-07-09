@@ -40,7 +40,7 @@ export interface UpdateCartItemDto {
 }
 
 export const cartService = {
-  getCart: async (userId: string): Promise<Cart> => {
+  getCart: async (): Promise<Cart> => {
     const res = await client.get(`/Cart`);
     return res.data as Cart;
   },

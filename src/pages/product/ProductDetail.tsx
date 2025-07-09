@@ -109,7 +109,7 @@ export default function ProductDetail() {
         const loadCart = async () => {
             if (!user) return;
             try {
-                const cart = await cartService.getCart(user.id);
+                const cart = await cartService.getCart();
                 setCurrentCart(cart);
             } catch (error) {
                 console.error('Failed to load cart:', error);
@@ -170,7 +170,7 @@ export default function ProductDetail() {
                 }
 
                 // Refresh cart data
-                const updatedCart = await cartService.getCart(user!.id);
+                const updatedCart = await cartService.getCart();
                 setCurrentCart(updatedCart);
             } catch (error) {
                 toast.error("Không thể thêm vào giỏ hàng");

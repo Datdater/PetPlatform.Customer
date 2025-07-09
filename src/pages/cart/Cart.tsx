@@ -31,7 +31,7 @@ export default function CartPage() {
     if (!user) return;
     setLoading(true);
     try {
-      const data = await cartService.getCart(user.id);
+      const data = await cartService.getCart();
       setCart(data);
       // Select all items by default
       setSelectedItems(new Set(data.items.map(item => item.id)));
