@@ -27,22 +27,22 @@ export interface CreateAddressDto {
 }
 
 export const addressService = {
-  getAll: async (userId: string): Promise<Address[]> => {
-    const response = await client.get<Address[]>(`/customers/${userId}/address`);
+  getAll: async (): Promise<Address[]> => {
+    const response = await client.get<Address[]>(`/customers/address`);
     return response.data;
   },
 
-  create: async (userId: string, data: CreateAddressDto): Promise<Address> => {
-    const response = await client.post<Address>(`/customers/${userId}/address`, data);
+  create: async (data: CreateAddressDto): Promise<Address> => {
+    const response = await client.post<Address>(`/customers/address`, data);
     return response.data;
   },
 
-  update: async (userId: string, id: string, data: CreateAddressDto): Promise<Address> => {
-    const response = await client.put<Address>(`/customers/${userId}/address/${id}`, data);
+  update: async (id: string, data: CreateAddressDto): Promise<Address> => {
+    const response = await client.put<Address>(`/customers/address/${id}`, data);
     return response.data;
   },
 
-  delete: async (userId: string, id: string): Promise<void> => {
-    await client.delete(`/customers/${userId}/address/${id}`);
+  delete: async (id: string): Promise<void> => {
+    await client.delete(`/customers/address/${id}`);
   },
 }; 

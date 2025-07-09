@@ -79,7 +79,7 @@ const AddressCustomer = () => {
     if (!user) return;
     setLoading(true);
     try {
-      const data = await addressService.getAll(user.id);
+      const data = await addressService.getAll();
       setAddresses(data);
     } catch (error) {
       toast.error("Failed to fetch addresses");
@@ -157,10 +157,10 @@ const AddressCustomer = () => {
 
     try {
       if (editingAddress) {
-        await addressService.update(user.id, editingAddress.id, submitData);
+        await addressService.update(editingAddress.id, submitData);
         toast.success("Address updated successfully");
       } else {
-        await addressService.create(user.id, submitData);
+        await addressService.create(submitData);
         toast.success("Address created successfully");
       }
       handleCloseDialog();
@@ -174,7 +174,7 @@ const AddressCustomer = () => {
     if (!user) return;
     if (window.confirm("Are you sure you want to delete this address?")) {
       try {
-        await addressService.delete(user.id, id);
+        await addressService.delete(id);
         toast.success("Address deleted successfully");
         fetchAddresses();
       } catch (error) {

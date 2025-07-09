@@ -99,7 +99,7 @@ export default function Checkout() {
   const fetchAddresses = async () => {
     if (!user) return;
     try {
-      const data = await addressService.getAll(user.id);
+      const data = await addressService.getAll();
       setAddresses(data);
       // Set default address if available
       const defaultAddress = data.find(addr => addr.isDefault);
