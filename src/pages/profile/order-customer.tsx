@@ -20,15 +20,16 @@ const STATUS_TABS = [
 ];
 
 const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return new Intl.DateTimeFormat('vi-VN', {
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit',
-        hour: '2-digit',
-        minute: '2-digit',
-        hour12: false
-    }).format(date);
+  const date = new Date(dateString);
+  return new Intl.DateTimeFormat(undefined, {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false,
+      timeZone: 'UTC'
+  }).format(date);
 };
 
 export default function OrderCustomerPage() {
@@ -184,7 +185,7 @@ export default function OrderCustomerPage() {
         </motion.div>
       ) : (
         <div className="space-y-6">
-          {orders.map((order, index) => (
+          {orders.map((order: any, index: number) => (
             <motion.div
               key={order.id}
               initial={{ opacity: 0, y: 20 }}
@@ -204,7 +205,7 @@ export default function OrderCustomerPage() {
                   </span>
                 </div>
                 <div className="divide-y">
-                  {order.orderDetailDTOs.map((item, idx) => (
+                  {order.orderDetailDTOs.map((item: any, idx: number) => (
                     <div key={item.productVariationId + idx} className="flex items-center py-4 gap-4">
                       <div className="relative w-20 h-20 rounded-lg overflow-hidden border bg-gray-50">
                         <img 
