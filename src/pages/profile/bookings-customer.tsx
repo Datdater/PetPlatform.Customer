@@ -8,6 +8,7 @@ import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Loader2, Package, Store } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { ServiceReviewDialog } from "@/components/features/petServices/ServiceReviewDialog";
 
 const BookingsCustomer: React.FC = () => {
     const user = useContext(UserContext);
@@ -17,6 +18,11 @@ const BookingsCustomer: React.FC = () => {
     const [totalPages, setTotalPages] = useState(1);
     const [isLoading, setIsLoading] = useState(true);
     const pageSize = 6;
+    const [reviewDialog, setReviewDialog] = useState<{
+        open: boolean;
+        serviceId: string | null;
+        serviceName: string;
+    }>({ open: false, serviceId: null, serviceName: "" });
 
     useEffect(() => {
         if (!user) {
@@ -36,7 +42,7 @@ const BookingsCustomer: React.FC = () => {
             };
             const res = await getBooking(params);
             setBookings(res.items);
-            setTotalPages(res.totalCount);
+            setTotalPages(Math.ceil(res.totalCount / pageSize));
         } catch (error) {
             console.error('Error fetching bookings:', error);
         } finally {
@@ -44,15 +50,15 @@ const BookingsCustomer: React.FC = () => {
         }
     };
 
-    const getStatusBadge = (status: string) => {
-        const statusConfig: { [key: string]: { variant: "default" | "secondary" | "destructive" | "outline", label: string, color: string } } = {
-            'PENDING': { variant: 'secondary', label: 'Chờ xác nhận', color: 'bg-yellow-100 text-yellow-800' },
-            'CONFIRMED': { variant: 'default', label: 'Đã xác nhận', color: 'bg-blue-100 text-blue-800' },
-            'COMPLETED': { variant: 'outline', label: 'Hoàn thành', color: 'bg-green-100 text-green-800' },
-            'CANCELLED': { variant: 'destructive', label: 'Đã hủy', color: 'bg-red-100 text-red-800' }
+    const getStatusBadge = (status: number) => {
+        const statusConfig: { [key: number]: { variant: "default" | "secondary" | "destructive" | "outline", label: string, color: string } } = {
+            1: { variant: 'secondary', label: 'Đã đặt', color: 'bg-yellow-100 text-yellow-800' },
+            2: { variant: 'default', label: 'Đang thực hiện', color: 'bg-blue-100 text-blue-800' },
+            3: { variant: 'outline', label: 'Hoàn thành', color: 'bg-green-100 text-green-800' },
+            4: { variant: 'destructive', label: 'Đã hủy', color: 'bg-red-100 text-red-800' }
         };
 
-        const config = statusConfig[status] || { variant: 'secondary', label: status, color: 'bg-gray-100 text-gray-800' };
+        const config = statusConfig[status] || { variant: 'secondary', label: String(status), color: 'bg-gray-100 text-gray-800' };
         return (
             <Badge variant={config.variant} className={`${config.color} font-medium px-3 py-1`}>
                 {config.label}
@@ -130,7 +136,7 @@ const BookingsCustomer: React.FC = () => {
                                                 Ngày hẹn: {formatDate(booking.bookingTime)}
                                             </div>
                                         </div>
-                                        {getStatusBadge(booking.status)}
+                                        {getStatusBadge(Number(booking.status))}
                                     </div>
                                     <div className="flex items-center gap-3 p-3 bg-orange-50 rounded-lg mb-4">
                                         <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-sm">
@@ -151,8 +157,19 @@ const BookingsCustomer: React.FC = () => {
                                                     <div className="font-medium truncate text-base">{detail.pet.name}</div>
                                                     <div className="text-gray-500 text-sm truncate">{detail.services[0].serviceDetailName}</div>
                                                 </div>
-                                                <div className="text-right min-w-[120px]">
+                                                <div className="text-right min-w-[120px] flex flex-col items-end gap-2">
                                                     <div className="font-semibold text-orange-600">{formatPrice(detail.services[0].price)}</div>
+                                                    {/* Review button for completed bookings */}
+                                                    {Number(booking.status) === 3 && (
+                                                        <Button
+                                                            size="sm"
+                                                            variant="outline"
+                                                            className="mt-2 border-green-200 text-green-700 hover:bg-green-50"
+                                                            onClick={() => setReviewDialog({ open: true, serviceId: detail.services[0].id, serviceName: detail.services[0].serviceDetailName })}
+                                                        >
+                                                            Đánh giá
+                                                        </Button>
+                                                    )}
                                                 </div>
                                             </div>
                                         ))}
@@ -182,6 +199,17 @@ const BookingsCustomer: React.FC = () => {
                     )}
                 </>
             )}
+            {/* Review Dialog (global, outside map) */}
+            <ServiceReviewDialog
+                open={reviewDialog.open}
+                serviceId={reviewDialog.serviceId || ""}
+                serviceName={reviewDialog.serviceName}
+                onOpenChange={(open) => setReviewDialog((prev) => ({ ...prev, open }))}
+                onSubmitted={() => {
+                    setReviewDialog({ open: false, serviceId: null, serviceName: "" });
+                    // Optionally show a toast here
+                }}
+            />
         </div>
     );
 };

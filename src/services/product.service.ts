@@ -112,6 +112,19 @@ export const getProductVariants = async (productId: string, attributes: IGetProd
   return response.data;
 };
 
+// Add product review
+export const addProductReview = async (
+  productId: string,
+  data: { orderDetailId: string; rating: number; comment: string }
+): Promise<void> => {
+  await client.post(`/products/${productId}/reviews`, {
+    productId,
+    orderDetailId: data.orderDetailId,
+    rating: data.rating,
+    comment: data.comment,
+  });
+};
+
 // Error handling helper
 export const handleProductError = (error: any): string => {
   if (error.response) {

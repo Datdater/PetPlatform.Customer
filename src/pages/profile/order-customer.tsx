@@ -5,18 +5,18 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { formatVnPrice } from "@/utils/formatPrice";
 import { motion } from "framer-motion";
-import { Loader2, Package, Truck, CheckCircle, XCircle, Clock, RefreshCw } from "lucide-react";
+import { Loader2, Package, Truck, CheckCircle, XCircle } from "lucide-react";
+import { ProductReviewDialog } from "@/components/features/products/ProductReviewDialog";
+import { Link } from "react-router-dom";
 
 const PAGE_SIZE = 5;
 
 const STATUS_TABS = [
   { key: "all", label: "Tất cả", icon: Package },
-  { key: "PendingPayment", label: "Chờ thanh toán", icon: Clock },
   { key: "Confirmed", label: "Đã xác nhận", icon: CheckCircle },
   { key: "Shipping", label: "Đang vận chuyển", icon: Truck },
   { key: "Delivered", label: "Đã giao hàng", icon: CheckCircle },
-  { key: "Cancelled", label: "Đã hủy", icon: XCircle },
-  { key: "Refunded", label: "Đã hoàn tiền", icon: RefreshCw },
+  { key: "Cancelled", label: "Đã hủy", icon: XCircle }
 ];
 
 const formatDate = (dateString: string) => {
@@ -47,6 +47,12 @@ export default function OrderCustomerPage() {
     totalPages: 1,
   });
   const [tab, setTab] = useState("all");
+  const [reviewDialog, setReviewDialog] = useState<{
+    open: boolean;
+    productId: string | null;
+    orderDetailId: string | null;
+    productName: string;
+  }>({ open: false, productId: null, orderDetailId: null, productName: "" });
 
   useEffect(() => {
     if (user) fetchOrders();
@@ -205,8 +211,8 @@ export default function OrderCustomerPage() {
                   </span>
                 </div>
                 <div className="divide-y">
-                  {order.orderDetailDTOs.map((item: any, idx: number) => (
-                    <div key={item.productVariationId + idx} className="flex items-center py-4 gap-4">
+                  {order.orderDetailDTOs.map((item: any) => (
+                    <div key={item.id} className="flex items-center py-4 gap-4">
                       <div className="relative w-20 h-20 rounded-lg overflow-hidden border bg-gray-50">
                         <img 
                           src={item.pictureUrl} 
@@ -215,12 +221,39 @@ export default function OrderCustomerPage() {
                         />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <div className="font-medium truncate text-base">{item.productName}</div>
+                        <div className="font-medium truncate text-base">
+                          <Link to={`/product/${item.productId}`} className="text-blue-600 hover:underline">
+                            {item.productName}
+                          </Link>
+                        </div>
                         <div className="text-gray-500 text-sm truncate">{parseAttributes(item.attribute)}</div>
                       </div>
-                      <div className="text-right min-w-[120px]">
+                      <div className="text-right min-w-[120px] flex flex-col items-end gap-2">
                         <div className="font-semibold text-orange-600">{formatVnPrice(item.price)}</div>
                         <div className="text-gray-500 text-xs">x {item.quantity}</div>
+                        {/* Review button for delivered orders, only if not reviewed */}
+                        {order.orderStatus === "Delivered" && !item.productReviews && (
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className="mt-2 border-green-200 text-green-700 hover:bg-green-50"
+                            onClick={() => setReviewDialog({ open: true, productId: item.productId, orderDetailId: item.id, productName: item.productName })}
+                          >
+                            Đánh giá
+                          </Button>
+                        )}
+                        {/* Show review if exists */}
+                        {item.productReviews && (
+                          <div className="bg-green-50 border border-green-200 rounded p-2 mt-2 w-full">
+                            <div className="flex items-center gap-2 mb-1">
+                              <span className="font-semibold text-green-700">Đánh giá của bạn:</span>
+                              <span className="text-yellow-500 font-bold">
+                                {Array.from({ length: item.productReviews.rating }).map((_) => "★")}
+                              </span>
+                            </div>
+                            <div className="text-green-800 italic">{item.productReviews.comment}</div>
+                          </div>
+                        )}
                       </div>
                     </div>
                   ))}
@@ -230,7 +263,7 @@ export default function OrderCustomerPage() {
                     Phí vận chuyển: {formatVnPrice(order.deliveryPrice)}
                   </div>
                   <div className="text-xl font-bold text-orange-600">
-                    Tổng: {formatVnPrice(order.price)}
+                    Tổng: {formatVnPrice(order.price + order.deliveryPrice)}
                   </div>
                 </div>
               </div>
@@ -263,6 +296,18 @@ export default function OrderCustomerPage() {
               Trang sau
             </Button>
           </motion.div>
+          {/* Review Dialog (global, outside map) */}
+          <ProductReviewDialog
+            open={reviewDialog.open}
+            productId={reviewDialog.productId || ""}
+            orderDetailId={reviewDialog.orderDetailId || ""}
+            productName={reviewDialog.productName}
+            onOpenChange={(open) => setReviewDialog((prev) => ({ ...prev, open }))}
+            onSubmitted={() => {
+              setReviewDialog({ open: false, productId: null, orderDetailId: null, productName: "" });
+              toast.success("Đánh giá thành công!");
+            }}
+          />
         </div>
       )}
     </div>

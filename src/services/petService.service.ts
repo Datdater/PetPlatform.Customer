@@ -28,6 +28,17 @@ export const getPetServiceDetail = async (id: string) : Promise<IPetServiceCard>
     return response.data;
 }
 
+export const addServiceReview = async (
+  serviceId: string,
+  data: { rating: number; comment: string }
+): Promise<void> => {
+  await client.post(`/Services/${serviceId}/reviews`, {
+    serviceId,
+    rating: data.rating,
+    comment: data.comment,
+  });
+};
+
 
 
 

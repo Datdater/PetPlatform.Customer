@@ -164,7 +164,8 @@ export default function Checkout() {
           productName: item.productName,
           pictureUrl: item.pictureUrl,
           productId: item.id,
-          attribute: item.attributes || {}
+          attribute: item.attributes || {},
+          id: item.id
         }));
 
         const orderData = {

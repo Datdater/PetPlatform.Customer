@@ -11,6 +11,7 @@ export interface OrderResponse {
 }
 
 export interface OrderDetail {
+  id: string;
   quantity: number;
   price: number;
   productVariationId: string;
@@ -18,6 +19,7 @@ export interface OrderDetail {
   pictureUrl: string;
   productId: string;
   attribute: Record<string, string>;
+  productReviews?: ProductReviews;
 }
 
 export interface Order {
@@ -48,6 +50,10 @@ export interface GetOrdersParams {
   pageSize: number;
   userId: string;
   status?: string | number;
+}
+export interface ProductReviews {
+  rating: number;
+  comment: string;
 }
 
 export const orderService = {
