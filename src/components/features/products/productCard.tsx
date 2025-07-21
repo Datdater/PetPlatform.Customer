@@ -191,20 +191,15 @@ export default function ProductCard({
 
         {/* Add to cart button */}
         <div className="mt-1.5 flex justify-center w-full">
-                      <Button 
+          <Link to={`/product/${id}`} className="w-full">
+            <Button 
               variant="default" 
               size="sm" 
-              className="w-full gap-2 rounded-full shadow-md" 
-              onClick={handleAddToCart}
-              disabled={isAddingToCart}
+              className="w-full gap-2 rounded-full shadow-md"
             >
-              {isAddingToCart ? (
-                <Loader2 className="w-4 h-4 animate-spin" />
-              ) : (
-                <ShoppingCart className="w-4 h-4" />
-              )}
-              <span>{isAddingToCart ? 'Đang thêm...' : 'Thêm vào giỏ'}</span>
+              <span>Xem chi tiết</span>
             </Button>
+          </Link>
         </div>
         
        
