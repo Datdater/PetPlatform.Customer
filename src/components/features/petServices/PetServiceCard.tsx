@@ -12,7 +12,7 @@ const PetServiceCard = ({
     storeCity,
     ratingAverage,
     totalUsed,
-    price
+    basePrice
 }: IPetServiceCard) => {
     // Generate stars based on rating
     const renderStars = () => {
@@ -70,7 +70,7 @@ const PetServiceCard = ({
             </div>
             {/* Price & Button */}
             <div className="px-4 pb-4 pt-2 flex flex-col gap-2">
-                <div className="text-lg font-bold text-primary text-center">{formatVnPrice(price)}</div>
+                <div className="text-lg font-bold text-primary text-center">{formatVnPrice(basePrice)}</div>
                 <Link
                     to={`/service/${id}`}
                     className="w-full bg-primary hover:bg-primary/90 text-primary-foreground rounded-lg py-2 font-semibold text-sm flex items-center justify-center gap-2 transition-colors duration-200 shadow hover:shadow-md"

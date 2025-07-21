@@ -81,28 +81,6 @@ export default function Header() {
 
                     {/* User area */}
                     <div className="flex items-center gap-4 flex-shrink-0 w-full md:w-auto justify-center md:justify-end">
-                        <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                                <Button variant="ghost" size="icon" className="relative">
-                                    <Bell className="h-6 w-6" />
-                                    {notificationCount > 0 && (
-                                        <Badge
-                                            className="absolute -top-1 -right-1 px-1.5 py-0.5 text-xs"
-                                            variant="destructive"
-                                        >
-                                            {notificationCount}
-                                        </Badge>
-                                    )}
-                                </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end" className="w-56">
-                                <DropdownMenuLabel>Thông báo</DropdownMenuLabel>
-                                <DropdownMenuSeparator />
-                                <DropdownMenuItem>Khuyến mãi 20% thức ăn chó</DropdownMenuItem>
-                                <DropdownMenuItem>Đơn hàng #12345 đã giao</DropdownMenuItem>
-                                <DropdownMenuItem>Chào mừng đến PetPlatform!</DropdownMenuItem>
-                            </DropdownMenuContent>
-                        </DropdownMenu>
 
                         {/* Shopping Cart */}
                         <Link to="/cart">
