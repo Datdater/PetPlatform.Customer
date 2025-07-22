@@ -134,7 +134,7 @@ const StorePage = () => {
                   <CardContent className="p-4 flex flex-col flex-1">
                     <div className="font-semibold text-base min-h-[40px] text-gray-900 mb-1 line-clamp-2">{service.name}</div>
                     <div className="flex items-end gap-2 mb-1">
-                      <span className="text-gray-900 font-bold text-lg">{service.price.toLocaleString()}₫</span>
+                      <span className="text-gray-900 font-bold text-lg">{service.basePrice.toLocaleString()}₫</span>
                     </div>
                     <div className="flex items-center gap-2 text-xs text-gray-500 mb-3">
                       <Star size={14} className="text-gray-400" /> {service.ratingAverage} | {service.description}

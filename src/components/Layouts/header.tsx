@@ -1,13 +1,12 @@
 import { useState, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Bell, ShoppingCart, User, Search } from 'lucide-react';
+import { ShoppingCart, User, Search } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
-    DropdownMenuLabel,
     DropdownMenuSeparator,
     DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
@@ -21,8 +20,7 @@ import { UserContext } from '@/store/contexts/UserContext';
 import { logout } from '@/services/auth.service';
 
 export default function Header() {
-    const user = useContext(UserContext);
-    const [notificationCount] = useState(3);
+    const user = useContext(UserContext);   
     const [mobileMenuOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
 
