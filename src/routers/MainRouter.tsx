@@ -17,6 +17,8 @@ import PetsCustomer from "@/pages/profile/pets-customer";
 import BookingsCustomer from "@/pages/profile/bookings-customer";
 import EmailConfirm from "@/pages/auth/EmailConfirm";
 import ComingSoon from "@/pages/common/ComingSoon";
+import Blog from "@/pages/blog/Blog";
+import BlogDetail from "@/pages/blog/BlogDetail";
 const MainRouter = () => {
     return (
         <BrowserRouter>
@@ -76,6 +78,8 @@ const MainRouter = () => {
                             <PetServiceDetail />
                         } />
                         <Route path="/email-confirm" element={<EmailConfirm />} />
+                        <Route path="/blog/:id" element={<BlogDetail />} />
+                        <Route path="/blog" element={<Blog />} />
                         <Route path="*" element={<ComingSoon />} />
                     </Routes>
                 </Layout>

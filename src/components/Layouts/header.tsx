@@ -58,6 +58,9 @@ export default function Header() {
                         <img src={logo} alt="Pet Platform Logo" className="h-10 sm:h-16 md:h-32 w-auto" />
                     </Link>
 
+                    {/* Blog Link */}
+                    <Link to="/blog" className="ml-4 text-[#ee4d2d] font-semibold text-base hover:underline whitespace-nowrap">Blog Thú Cưng</Link>
+
                     {/* Search bar */}
                     <div className="flex-grow w-full md:w-auto mb-2 md:mb-0">
                         <form onSubmit={handleSearch} className="flex">

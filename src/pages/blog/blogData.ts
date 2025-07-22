@@ -1,0 +1,86 @@
+const blogPosts = [
+  {
+    id: "loi-ich-nuoi-thu-cung",
+    title: "5 Lợi Ích Khi Nuôi Thú Cưng Đối Với Sức Khỏe Tinh Thần",
+    subtitle: "Thú cưng – Người bạn đồng hành tuyệt vời cho sức khỏe tinh thần",
+    date: "2024-06-01",
+    summary:
+      "Thú cưng không chỉ là người bạn đồng hành mà còn giúp giảm căng thẳng, lo âu và mang lại niềm vui cho cuộc sống hàng ngày.",
+    content: [
+      { type: "paragraph", text: "Nhiều nghiên cứu đã chỉ ra rằng việc nuôi chó, mèo hoặc các loại thú cưng khác giúp giảm nguy cơ trầm cảm, tăng cảm giác hạnh phúc và cải thiện sức khỏe tinh thần. Hãy dành thời gian chơi đùa và chăm sóc thú cưng mỗi ngày để cảm nhận sự thay đổi tích cực!" },
+      { type: "subtitle", text: "1. Giảm căng thẳng và lo âu" },
+      { type: "paragraph", text: "Khi bạn vuốt ve hoặc chơi đùa với thú cưng, cơ thể sẽ tiết ra hormone hạnh phúc như oxytocin, giúp giảm mức độ căng thẳng và lo âu. Thú cưng còn là nguồn động viên tinh thần tuyệt vời trong những lúc bạn cảm thấy mệt mỏi." },
+      { type: "image", src: "https://images.unsplash.com/photo-1518717758536-85ae29035b6d?auto=format&fit=crop&w=600&q=80", alt: "Thú cưng và sức khỏe tinh thần" },
+      { type: "subtitle", text: "2. Tăng cường hoạt động thể chất" },
+      { type: "paragraph", text: "Việc dắt chó đi dạo hoặc chơi cùng mèo giúp bạn vận động nhiều hơn, cải thiện sức khỏe tim mạch và duy trì cân nặng hợp lý." },
+      { type: "subtitle", text: "3. Cải thiện các mối quan hệ xã hội" },
+      { type: "paragraph", text: "Thú cưng là cầu nối giúp bạn dễ dàng kết bạn với những người cùng sở thích. Các buổi gặp mặt, hội nhóm yêu thú cưng là nơi lý tưởng để chia sẻ kinh nghiệm và mở rộng mối quan hệ." },
+      { type: "image", src: "https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=600&q=80", alt: "Cộng đồng yêu thú cưng" },
+      { type: "subtitle", text: "4. Giảm cảm giác cô đơn" },
+      { type: "paragraph", text: "Thú cưng luôn bên cạnh, lắng nghe và chia sẻ cảm xúc với bạn. Sự hiện diện của chúng giúp bạn cảm thấy ấm áp và bớt cô đơn hơn." },
+      { type: "subtitle", text: "5. Tạo thói quen sống tích cực" },
+      { type: "paragraph", text: "Chăm sóc thú cưng giúp bạn xây dựng thói quen sinh hoạt điều độ, có trách nhiệm hơn với bản thân và những người xung quanh." },
+      { type: "image", src: "https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=600&q=80", alt: "Thói quen sống tích cực với thú cưng" },
+      { type: "subtitle", text: "Lời khuyên" },
+      { type: "paragraph", text: "- Hãy dành ít nhất 15-30 phút mỗi ngày để chơi đùa cùng thú cưng.\n- Đưa thú cưng đi kiểm tra sức khỏe định kỳ.\n- Chia sẻ niềm vui và khó khăn khi nuôi thú cưng với bạn bè, cộng đồng.\n\nNuôi thú cưng không chỉ mang lại niềm vui mà còn giúp bạn sống khỏe mạnh và hạnh phúc hơn mỗi ngày!" },
+    ],
+    image:
+      "https://images.unsplash.com/photo-1518717758536-85ae29035b6d?auto=format&fit=crop&w=400&q=80",
+  },
+  {
+    id: "cham-soc-meo-con",
+    title: "Cách Chăm Sóc Mèo Con Mới Nhận Về Nhà",
+    subtitle: "Những điều cần biết khi đón mèo con về nhà mới",
+    date: "2024-05-25",
+    summary:
+      "Mèo con cần được chăm sóc đặc biệt trong những ngày đầu về nhà mới. Dưới đây là một số lưu ý quan trọng cho bạn.",
+    content: [
+      { type: "paragraph", text: "Việc đón mèo con về nhà là một trải nghiệm thú vị nhưng cũng đầy thử thách. Để mèo con phát triển khỏe mạnh, bạn cần chú ý những điều sau:" },
+      { type: "subtitle", text: "1. Chuẩn bị không gian an toàn" },
+      { type: "paragraph", text: "Tạo một góc nhỏ yên tĩnh, ấm áp với ổ nằm sạch sẽ cho mèo con. Tránh để mèo tiếp xúc với các vật sắc nhọn hoặc hóa chất độc hại." },
+      { type: "image", src: "https://fusiongroup.vn/upload/file/thumb_800x0/cach-nhanh-nhat-de-nhan-biet-dau-hieu-meo-bi-om-1619079101-1722321066.png", alt: "Mèo con an toàn" },
+      { type: "subtitle", text: "2. Chế độ dinh dưỡng phù hợp" },
+      { type: "paragraph", text: "Mèo con cần được ăn thức ăn chuyên dụng, giàu dinh dưỡng và dễ tiêu hóa. Không nên cho mèo ăn thức ăn của người lớn hoặc thức ăn thừa." },
+      { type: "subtitle", text: "3. Làm quen với môi trường mới" },
+      { type: "paragraph", text: "Hãy kiên nhẫn để mèo con tự khám phá không gian sống. Đừng ép buộc hoặc làm mèo sợ hãi. Có thể sử dụng đồ chơi nhỏ để tạo sự thân thiện." },
+        { type: "image", src: "https://images.unsplash.com/photo-1518715308788-3005759c61d4?auto=format&fit=crop&w=600&q=80", alt: "Mèo con làm quen môi trường" },
+        { type: "subtitle", text: "4. Tiêm phòng và tẩy giun" },
+      { type: "paragraph", text: "Đưa mèo con đến bác sĩ thú y để tiêm phòng các bệnh nguy hiểm và tẩy giun định kỳ. Đây là bước quan trọng giúp mèo phát triển khỏe mạnh." },
+      { type: "subtitle", text: "5. Vệ sinh cá nhân" },
+      { type: "paragraph", text: "Tập cho mèo con đi vệ sinh đúng chỗ, thường xuyên chải lông và kiểm tra tai, mắt, răng miệng để phát hiện sớm các vấn đề sức khỏe." },
+      { type: "subtitle", text: "Lưu ý thêm" },
+      { type: "paragraph", text: "- Không nên tắm mèo con quá sớm, chỉ lau sạch bằng khăn ấm nếu cần thiết.\n- Dành thời gian vuốt ve, trò chuyện để mèo cảm thấy an toàn và gắn bó với bạn.\n\nChăm sóc mèo con đúng cách sẽ giúp bé lớn lên khỏe mạnh, ngoan ngoãn và trở thành người bạn thân thiết của gia đình!" },
+    ],
+    image:
+      "https://fusiongroup.vn/upload/file/thumb_800x0/cach-nhanh-nhat-de-nhan-biet-dau-hieu-meo-bi-om-1619079101-1722321066.png",
+  },
+  {
+    id: "luu-y-dat-cho-di-dao",
+    title: "Những Lưu Ý Khi Dắt Chó Đi Dạo Ngoài Trời",
+    subtitle: "Đi dạo cùng chó – An toàn và vui vẻ cho cả hai",
+    date: "2024-05-18",
+    summary:
+      "Đi dạo là hoạt động yêu thích của chó, nhưng bạn cần chú ý một số điều để đảm bảo an toàn cho thú cưng.",
+    content: [
+      { type: "paragraph", text: "Dắt chó đi dạo không chỉ giúp chó vận động mà còn tăng cường mối quan hệ giữa bạn và thú cưng. Tuy nhiên, để buổi đi dạo an toàn và vui vẻ, bạn cần lưu ý:" },
+      { type: "subtitle", text: "1. Sử dụng dây dắt phù hợp" },
+      { type: "paragraph", text: "Chọn dây dắt chắc chắn, vừa vặn với kích thước của chó. Không nên để chó chạy tự do ở nơi công cộng để tránh nguy hiểm." },
+      { type: "image", src: "https://file.hstatic.net/200000159621/article/6.20_0f9f21df076c431aa49ae1ca33d102d7_1024x1024.jpg", alt: "Chó đi dạo an toàn" },
+      { type: "subtitle", text: "2. Chọn thời điểm và địa điểm hợp lý" },
+      { type: "paragraph", text: "Nên dắt chó đi dạo vào sáng sớm hoặc chiều mát, tránh trời nắng gắt. Ưu tiên những nơi có không gian xanh, ít xe cộ và an toàn." },
+      { type: "subtitle", text: "3. Mang theo nước và túi vệ sinh" },
+      { type: "paragraph", text: "Luôn chuẩn bị nước uống cho chó và túi để dọn vệ sinh khi cần thiết. Giữ gìn vệ sinh chung là trách nhiệm của mỗi người nuôi thú cưng." },
+      { type: "subtitle", text: "4. Quan sát biểu hiện của chó" },
+      { type: "paragraph", text: "Nếu chó có dấu hiệu mệt mỏi, sợ hãi hoặc bị thương, hãy dừng lại và kiểm tra ngay. Đừng ép chó vận động quá sức." },
+      { type: "subtitle", text: "5. Giao tiếp và huấn luyện" },
+      { type: "paragraph", text: "Sử dụng lời khen, phần thưởng để khuyến khích chó nghe lời khi đi dạo. Đây cũng là dịp tốt để dạy chó các kỹ năng cơ bản." },
+      { type: "image", src: "https://file.hstatic.net/200000159621/article/6.20_0f9f21df076c431aa49ae1ca33d102d7_1024x1024.jpg", alt: "Huấn luyện chó khi đi dạo" },
+      { type: "subtitle", text: "Một số mẹo nhỏ" },
+      { type: "paragraph", text: "- Không cho chó tiếp xúc với động vật lạ nếu chưa tiêm phòng đầy đủ.\n- Luôn giữ chó trong tầm kiểm soát.\n- Đảm bảo chó đeo thẻ tên và thông tin liên lạc phòng trường hợp đi lạc.\n\nĐi dạo đúng cách sẽ giúp chó khỏe mạnh, vui vẻ và gắn bó hơn với bạn mỗi ngày!" },
+    ],
+    image:
+      "https://file.hstatic.net/200000159621/article/6.20_0f9f21df076c431aa49ae1ca33d102d7_1024x1024.jpg",
+  },
+];
+
+export default blogPosts; 
